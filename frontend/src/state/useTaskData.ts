@@ -13,7 +13,7 @@ export const keys = {
   me: ['me'] as const,
 }
 
-/** Server state only (docs/08): everything shown comes from the API, never from local copies. */
+/** Server state only (docs/architecture/data-and-contracts.md): everything shown comes from the API, never from local copies. */
 export function useTaskData(taskId: string | null) {
   const api = useApi()
   const enabled = taskId !== null

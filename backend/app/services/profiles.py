@@ -48,7 +48,7 @@ def _planner_seed(key: str = PLANNER_KEY) -> ModelProfile:
         when_thinking_disabled={},
         # `vision`: the planner is sent the task's current picture so it can answer "what
         # colour is it" instead of "I cannot read that". Verified against the bound model,
-        # not assumed from its name (decisions/0041).
+        # not assumed from its name (docs/architecture/agent-runtime.md).
         capabilities=["plan", "vision"],
         price={"per_million_input": 0, "per_million_output": 0, "per_image": 0},
         param_schema={},
@@ -129,7 +129,7 @@ class ProfileService:
             if image_model.strip():
                 image.upstream_model = image_key
             if "image.chat" not in (image.capabilities or []):
-                # A row created before decision 0022 lacks the shape flag; add it, keep the rest.
+                # A row created before docs/architecture/agent-runtime.md lacks the shape flag; add it, keep the rest.
                 image.capabilities = [*(image.capabilities or []), "image.chat"]
         self.s.flush()
         for agent in _AGENTS:

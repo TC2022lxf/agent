@@ -1,4 +1,4 @@
-"""HTTP API (docs/07). Utterances only enqueue and return 202; the worker runs the Run."""
+"""HTTP API (docs/architecture/agent-runtime.md). Utterances only enqueue and return 202; the worker runs the Run."""
 
 from __future__ import annotations
 
@@ -123,7 +123,7 @@ class Utterance(BaseModel):
     attachment_ids: list[str] = Field(default_factory=list)  # composer `+` uploads
     # The `ask_question` this sentence answers. Not a tool_result: a Run is not resumed, it is
     # a new Run — but it must know which question it is replying to, or the answer arrives
-    # with no question attached (decisions/0043).
+    # with no question attached (docs/architecture/system.md).
     answers_request_id: str | None = None
 
 
@@ -812,7 +812,7 @@ def post_utterance(
         )
         if created:
             # Freeze BEFORE returning 202. A user with no balance must not start a Run whose
-            # vendor cost lands before the first settlement (decisions/0004).
+            # vendor cost lands before the first settlement (docs/architecture/data-and-contracts.md).
             try:
                 uow.credits.hold(user, run.id, run.held)
             except InsufficientCredits as e:

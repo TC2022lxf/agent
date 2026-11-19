@@ -1,4 +1,4 @@
-"""How the loop decides what a sentence is (docs/03, 04; decisions/0044).
+"""How the loop decides what a sentence is (docs/architecture/data-and-contracts.md, 04; docs/architecture/agent-runtime.md).
 
 There is no longer a separate interpret model call. The judgement "is this a rule or an
 edit?" is made inside the loop by calling `record_constraint`, so these tests pin two

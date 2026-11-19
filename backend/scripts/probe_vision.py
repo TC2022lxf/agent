@@ -1,6 +1,6 @@
 """Does the bound planner model actually accept an image? One paid call, tiny image.
 
-A profile that does not declare `vision` gets no pictures attached (decisions/0041), so a
+A profile that does not declare `vision` gets no pictures attached (docs/architecture/agent-runtime.md), so a
 model that CAN see would be needlessly blind. This asks the vendor directly instead of
 guessing from the model name.
 """

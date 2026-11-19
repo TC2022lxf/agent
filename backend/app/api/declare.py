@@ -1,4 +1,4 @@
-"""API declarations and the auth/limit middleware of docs/07 and 11.
+"""API declarations and the auth/limit middleware of docs/architecture/agent-runtime.md and 11.
 
 Every route must declare its rate class and who may call it, or the app refuses to start.
 Cross-cutting concerns live here, not in route bodies:
@@ -132,7 +132,7 @@ def current_identity(request: Request) -> Identity:
 
 
 def _check_csrf(request: Request, identity: Identity) -> None:
-    """Cookie sessions need the double-submit token on writes (docs/11 section 2)."""
+    """Cookie sessions need the double-submit token on writes (docs/architecture/data-and-contracts.md section 2)."""
     if identity.via != "session":
         return
     if request.method in {"GET", "HEAD", "OPTIONS"}:

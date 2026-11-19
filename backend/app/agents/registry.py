@@ -1,4 +1,4 @@
-"""Agent, Tool and Skill registration (docs/07). Registration fails without descriptions."""
+"""Agent, Tool and Skill registration (docs/architecture/agent-runtime.md). Registration fails without descriptions."""
 
 from __future__ import annotations
 

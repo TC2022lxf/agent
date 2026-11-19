@@ -1,0 +1,230 @@
+{
+  "pdp_initial": {
+    "id": "run_6c18b7a037c9",
+    "task_id": "task_5017a9bdf906",
+    "agent_key": "amazon_pdp",
+    "status": "succeeded",
+    "cost": 20,
+    "tools": [
+      {
+        "tool": "edit_listing",
+        "status": "ok",
+        "error": null
+      },
+      {
+        "tool": "edit_listing",
+        "status": "ok",
+        "error": null
+      },
+      {
+        "tool": "edit_listing",
+        "status": "ok",
+        "error": null
+      },
+      {
+        "tool": "edit_listing",
+        "status": "ok",
+        "error": null
+      }
+    ],
+    "model_calls": [
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "plan",
+        "tokens_in": 2865,
+        "tokens_out": 1931
+      },
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "listing_edit",
+        "tokens_in": 203,
+        "tokens_out": 99
+      },
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "listing_edit",
+        "tokens_in": 212,
+        "tokens_out": 336
+      },
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "listing_edit",
+        "tokens_in": 203,
+        "tokens_out": 310
+      },
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "listing_edit",
+        "tokens_in": 205,
+        "tokens_out": 275
+      },
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "plan",
+        "tokens_in": 2752,
+        "tokens_out": 189
+      },
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "followups",
+        "tokens_in": 734,
+        "tokens_out": 247
+      }
+    ]
+  },
+  "pdp_before": {
+    "title": {
+      "id": "ver_c6555679d38c",
+      "seq": 1,
+      "content": {
+        "text": "Logitech M185 Wireless Mouse — 2.4 GHz Wireless with USB Receiver, Compact Ambidextrous Design"
+      }
+    },
+    "bullets": {
+      "id": "ver_fb90b5916bbb",
+      "seq": 1,
+      "content": {
+        "items": [
+          "Logitech M185 Wireless Mouse with 2.4 GHz wireless connection",
+          "Includes a USB receiver for wireless use",
+          "Compact design",
+          "Ambidextrous shape suitable for left- and right-handed users",
+          "Model M185 wireless mouse"
+        ]
+      }
+    },
+    "description": {
+      "id": "ver_314b60727515",
+      "seq": 1,
+      "content": {
+        "text": "Logitech M185 Wireless Mouse\n\nA compact wireless mouse built around a simple idea: reliable everyday pointing without the cord. The M185 connects over 2.4 GHz wireless and pairs with the included USB receiver, so setup stays straightforward.\n\nIts compact shape is designed to be ambidextrous, fitting comfortably in either the left or right hand. Model: M185. Package includes the M185 mouse and USB receiver."
+      }
+    },
+    "search_terms": {
+      "id": "ver_b98103b201ad",
+      "seq": 1,
+      "content": {
+        "text": "Logitech M185 M185 wireless mouse 2.4 GHz wireless mouse USB receiver mouse compact wireless mouse ambidextrous mouse Logitech wireless mouse"
+      }
+    }
+  },
+  "pdp_checks_initial": {
+    "missing_slots": [],
+    "title_nonempty": true,
+    "title_starts_with_core": true,
+    "bullets_count": 5,
+    "bullets_five_nonempty": true,
+    "description_nonempty": true,
+    "search_terms_nonempty": true,
+    "banned_fact_matches": {},
+    "passed": true
+  },
+  "pdp_revision": {
+    "id": "run_9ae5ab94d65b",
+    "task_id": "task_5017a9bdf906",
+    "agent_key": "amazon_pdp",
+    "status": "succeeded",
+    "cost": 5,
+    "tools": [
+      {
+        "tool": "edit_listing",
+        "status": "ok",
+        "error": null
+      }
+    ],
+    "model_calls": [
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "plan",
+        "tokens_in": 3102,
+        "tokens_out": 164
+      },
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "listing_edit",
+        "tokens_in": 278,
+        "tokens_out": 120
+      },
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "plan",
+        "tokens_in": 2563,
+        "tokens_out": 34
+      },
+      {
+        "model": "DeepSeek-V4.1-Flash-261017",
+        "status": "ok",
+        "purpose": "followups",
+        "tokens_in": 669,
+        "tokens_out": 133
+      }
+    ]
+  },
+  "pdp_after": {
+    "title": {
+      "id": "ver_4c44f071b82c",
+      "seq": 2,
+      "content": {
+        "text": "Logitech M185 Wireless Mouse with USB Receiver"
+      }
+    },
+    "bullets": {
+      "id": "ver_fb90b5916bbb",
+      "seq": 1,
+      "content": {
+        "items": [
+          "Logitech M185 Wireless Mouse with 2.4 GHz wireless connection",
+          "Includes a USB receiver for wireless use",
+          "Compact design",
+          "Ambidextrous shape suitable for left- and right-handed users",
+          "Model M185 wireless mouse"
+        ]
+      }
+    },
+    "description": {
+      "id": "ver_314b60727515",
+      "seq": 1,
+      "content": {
+        "text": "Logitech M185 Wireless Mouse\n\nA compact wireless mouse built around a simple idea: reliable everyday pointing without the cord. The M185 connects over 2.4 GHz wireless and pairs with the included USB receiver, so setup stays straightforward.\n\nIts compact shape is designed to be ambidextrous, fitting comfortably in either the left or right hand. Model: M185. Package includes the M185 mouse and USB receiver."
+      }
+    },
+    "search_terms": {
+      "id": "ver_b98103b201ad",
+      "seq": 1,
+      "content": {
+        "text": "Logitech M185 M185 wireless mouse 2.4 GHz wireless mouse USB receiver mouse compact wireless mouse ambidextrous mouse Logitech wireless mouse"
+      }
+    }
+  },
+  "pdp_checks": {
+    "revision_run_succeeded": true,
+    "title_changed": true,
+    "title_matches_requested": true,
+    "other_slots_unchanged": true,
+    "old_title_retrievable": true,
+    "final_listing": {
+      "missing_slots": [],
+      "title_nonempty": true,
+      "title_starts_with_core": true,
+      "bullets_count": 5,
+      "bullets_five_nonempty": true,
+      "description_nonempty": true,
+      "search_terms_nonempty": true,
+      "banned_fact_matches": {},
+      "passed": true
+    }
+  },
+  "pdp_technical_checks_passed": true,
+  "human_acceptance": "not_run",
+  "version_history_opened": true
+}

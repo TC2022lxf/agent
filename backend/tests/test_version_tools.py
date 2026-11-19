@@ -1,4 +1,4 @@
-"""Tools that let the agent look before it acts (decisions/0045).
+"""Tools that let the agent look before it acts (docs/architecture/agent-runtime.md).
 
 Three of these exist because the information was already in the database and simply had no
 tool: the version history, the rule measurements, and a deterministic repair. The tests pin

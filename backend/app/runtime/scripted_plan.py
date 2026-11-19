@@ -218,7 +218,7 @@ def _call(slot: str, item: dict[str, Any], view: dict[str, Any]) -> dict[str, An
 def _canvas_plan(item: dict[str, Any], view: dict[str, Any]) -> dict[str, Any]:
     """Offline stand-in for the canvas: draw the first picture, a variant, or one module changed.
 
-    A canvas exists to make pictures (decisions/0031). A first sentence is a picture request:
+    A canvas exists to make pictures (docs/architecture/data-and-contracts.md). A first sentence is a picture request:
     the board gets one screen with one image module whose prompt is that sentence, and the
     picture is drawn in the same turn, so a placeholder appears and is then filled.
     """

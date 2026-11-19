@@ -7,6 +7,7 @@ Usage (from backend/):  python scripts/gen_docs.py [--check]
 from __future__ import annotations
 
 import sys
+from collections.abc import Iterable
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -14,7 +15,8 @@ OUT = ROOT / "docs" / "generated"
 sys.path.insert(0, str(ROOT / "backend"))
 
 from app.agents.builtin import build_evaluators, build_registry  # noqa: E402
-from app.api.declare import RATE_LIMITS  # noqa: E402
+from app.api.auth_routes import router as auth_api  # noqa: E402
+from app.api.declare import RATE_LIMITS, Decl  # noqa: E402
 from app.api.routes import api  # noqa: E402
 from app.domain import slots as slot_registry  # noqa: E402
 
@@ -90,10 +92,22 @@ def _no_fixed_slots(kind: str) -> str:
     return "file names from write_file"
 
 
+def collect_api_declarations(groups: Iterable[Iterable[Decl]]) -> tuple[Decl, ...]:
+    """Collect every router and reject duplicate operation identities instead of hiding them."""
+    operations: dict[tuple[str, str], Decl] = {}
+    for group in groups:
+        for decl in group:
+            key = (decl.method, decl.path)
+            if key in operations:
+                raise ValueError(f"duplicate API operation: {decl.method} {decl.path}")
+            operations[key] = decl
+    return tuple(sorted(operations.values(), key=lambda d: (d.path, d.method)))
+
+
 def api_md() -> str:
     rows = ["# API\n", "| method | path | auth | rate class |", "| --- | --- | --- | --- |"]
-    for d in sorted(api.decls, key=lambda d: (d.path, d.method)):
-        rows.append(f"| {d.method} | `{d.path}` | {'yes' if d.auth else 'no'} | {d.rate} |")
+    for d in collect_api_declarations((api.decls, auth_api.decls)):
+        rows.append(f"| {d.method} | `{d.path}` | {d.auth} | {d.rate} |")
     rows += ["", "Rate classes: " + ", ".join(
         f"`{k}` {n}/{int(w)}s" for k, (n, w) in RATE_LIMITS.items())]
     return "\n".join(rows) + "\n"
@@ -108,6 +122,8 @@ FILES = {
 def main() -> int:
     check = "--check" in sys.argv
     bad = 0
+    if not check:
+        OUT.mkdir(parents=True, exist_ok=True)
     for name, fn in FILES.items():
         text = HEADER + fn()
         path = OUT / name

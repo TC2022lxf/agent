@@ -1,4 +1,4 @@
-// ApiClient: the ONLY place that talks to the backend (docs/08). Components never fetch.
+// ApiClient: the ONLY place that talks to the backend (docs/architecture/data-and-contracts.md). Components never fetch.
 //
 // Two things about credentials, both deliberate:
 //   credentials: 'include' so the HttpOnly session cookie travels (SSE and <img> rely on it).

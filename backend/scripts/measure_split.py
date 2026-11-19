@@ -17,7 +17,7 @@ import uuid
 from playwright.sync_api import sync_playwright
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:5173"
-# The app has no auth yet: without an X-User-Id header the backend uses "dev-user" (docs/07).
+# The app has no auth yet: without an X-User-Id header the backend uses "dev-user" (docs/architecture/agent-runtime.md).
 # Seeding as anything else creates a Task the page can never list.
 USER = "dev-user"
 

@@ -73,7 +73,7 @@ function ToolForm({ name, schema }: { name: string; schema: Schema }) {
   )
 }
 
-/** Registry (docs/04). The detail page can run a tool; it does not edit the registration. */
+/** Registry (docs/architecture/agent-runtime.md). The detail page can run a tool; it does not edit the registration. */
 export function ToolsView() {
   const api = useApi()
   const { nav, go } = useNav()
@@ -131,7 +131,7 @@ export function ToolsView() {
 }
 
 /**
- * Skills (docs/13). Every Skill is visible; editing saves a revision, never the repo file.
+ * Skills (docs/architecture/agent-runtime.md). Every Skill is visible; editing saves a revision, never the repo file.
  * A stale `revision` comes back as 409 and the editor reloads instead of overwriting.
  */
 export function SkillsView() {

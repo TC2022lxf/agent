@@ -39,7 +39,7 @@ def test_second_run_on_active_task_conflicts(api: Api) -> None:
 def test_credits_are_held_then_settled_through_the_ledger(api: Api) -> None:
     t = api.task()
     assert api.http.get("/api/me").json()["credits"] == 1000
-    # The ceiling is per Task kind, not one global number (docs/11 section 3).
+    # The ceiling is per Task kind, not one global number (docs/architecture/data-and-contracts.md section 3).
     budget = api.http.get("/api/billing/pricing").json()["budgets"]["pdp"]
     assert budget > 0
     r = _post(api, t["id"], "a")
@@ -76,7 +76,7 @@ def test_settling_the_same_run_twice_does_not_charge_twice(api: Api) -> None:
 
 
 def test_a_platform_fault_refunds_the_whole_hold(api: Api) -> None:
-    """Vendor timeout or a crash is our side: the user keeps their credits (docs/11)."""
+    """Vendor timeout or a crash is our side: the user keeps their credits (docs/architecture/data-and-contracts.md)."""
     t = api.task()
     r = _post(api, t["id"], "a")
     run_id = r.json()["id"]
@@ -141,7 +141,7 @@ def test_run_records_actual_path_and_llm_calls(api: Api) -> None:
     with api.c.uow_factory() as uow:
         rows = list(uow._session.scalars(select(LlmCall).where(LlmCall.run_id == run["id"])))
     aliases = {r.alias for r in rows}
-    # No `interpret` call: the one that used to route the sentence is gone (decisions/0044).
+    # No `interpret` call: the one that used to route the sentence is gone (docs/architecture/agent-runtime.md).
     # Only the planner and the tools' own model calls are billed.
     assert "listing_edit" in aliases and "interpret" not in aliases
     assert any(r.purpose == "plan" for r in rows)
@@ -191,7 +191,7 @@ def test_next_run_reads_the_users_edited_preferences(api: Api) -> None:
 
 
 def test_progress_events_describe_each_phase(api: Api) -> None:
-    """A waiting user needs to see the phase change, not one static line (docs/06)."""
+    """A waiting user needs to see the phase change, not one static line (docs/architecture/system.md)."""
     task = api.task("amazon_pdp", goal="剃须刀")
     run = api.say(task["id"], "第一版")
     with api.c.uow_factory() as uow:
@@ -226,7 +226,7 @@ def test_progress_does_not_change_the_recorded_path(api: Api) -> None:
     # The interesting part: the phases the user complained were missing actually appear.
     stages = [s.get("stage") for s in steps]
     # There is no "正在分析意图" moment any more: routing is a tool call inside the loop, so the
-    # first thing the user sees is the model thinking (decisions/0044).
+    # first thing the user sees is the model thinking (docs/architecture/agent-runtime.md).
     assert "interpret" not in stages, "a separate interpret call came back"
     assert "running" in stages, "no '正在生成/正在写文案' moment"
     assert "think" in stages, "no '正在思考' moment while the model is called"

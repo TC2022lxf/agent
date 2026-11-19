@@ -205,7 +205,7 @@ class LedgerEntry(Base):
     """Append-only. Balance is the sum of `delta`; never updated in place.
 
     `idempotency_key` makes hold/settle/topup safe to retry: a replayed write is a no-op
-    instead of a second charge. Kinds follow docs/11: grant | topup | hold | settle |
+    instead of a second charge. Kinds follow docs/architecture/data-and-contracts.md: grant | topup | hold | settle |
     refund | adjust | spend.
     """
 
@@ -269,7 +269,7 @@ class Session(Base):
 
 
 class AuditLog(Base):
-    """Append-only record of privileged writes (docs/11). Never updated, never deleted."""
+    """Append-only record of privileged writes (docs/architecture/data-and-contracts.md). Never updated, never deleted."""
 
     __tablename__ = "audit_logs"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)

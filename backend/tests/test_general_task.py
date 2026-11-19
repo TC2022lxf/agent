@@ -1,4 +1,4 @@
-"""A general Task: one conversation, several artifact kinds (decisions/0019).
+"""A general Task: one conversation, several artifact kinds (docs/architecture/data-and-contracts.md).
 
 The point of the test is that the picture and the written file live in the same Task and
 share the same context; nothing is moved to a second Task.

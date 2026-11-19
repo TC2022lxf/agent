@@ -1,4 +1,4 @@
-"""Canvas over MCP (decisions/0030): an external agent reads and writes the same board.
+"""Canvas over MCP (docs/architecture/system.md): an external agent reads and writes the same board.
 
 The point is not that the tools exist, it is that a write from outside obeys the rules the UI
 obeys: a new Version, never an overwrite, a stale read refused, and the write boundary checked.

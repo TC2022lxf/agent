@@ -1,4 +1,4 @@
-"""Uploaded files that are not images (docs/07). The composer's `+` sends them here.
+"""Uploaded files that are not images (docs/architecture/agent-runtime.md). The composer's `+` sends them here.
 
 Text-ish files are decoded so a Skill or Tool can read them; everything else is kept as
 bytes and only offered as a download. Neither path creates a Version: an upload is context

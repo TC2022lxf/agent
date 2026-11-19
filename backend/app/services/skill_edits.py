@@ -1,4 +1,4 @@
-"""Skill edits (docs/13). The repo file is the shipped baseline; edits are rows, never file writes.
+"""Skill edits (docs/architecture/agent-runtime.md). The repo file is the shipped baseline; edits are rows, never file writes.
 
 Why not overwrite `skills/<id>/SKILL.md`:
 

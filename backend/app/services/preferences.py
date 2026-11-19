@@ -1,4 +1,4 @@
-"""Preferences Markdown (docs/05). Agents may only propose; users own the canonical text."""
+"""Preferences Markdown (docs/architecture/data-and-contracts.md). Agents may only propose; users own the canonical text."""
 
 from __future__ import annotations
 

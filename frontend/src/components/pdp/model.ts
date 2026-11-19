@@ -31,7 +31,7 @@ export const rowOf = (rows: SlotRow[], slot: string): SlotRow | undefined => row
 export interface CheckLine {
   code: string
   ok: boolean
-  /** Rule checks only exist today; model checks arrive with docs/09 evaluators. */
+  /** Rule checks only exist today; model checks arrive with docs/architecture/data-and-contracts.md evaluators. */
   kind: 'rule' | 'model'
   message: string
   baseline: boolean

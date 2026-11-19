@@ -1,4 +1,4 @@
-"""Review-phase context, follow-up suggestions, and streaming (decisions/0041, 0042).
+"""Review-phase context, follow-up suggestions, and streaming (docs/architecture/agent-runtime.md, 0042).
 
 Three separate problems these cover, all of which looked like one bug to the user:
 
@@ -178,7 +178,7 @@ def test_planner_profile_declares_vision_by_default(api: Api) -> None:
 
     Verified against the vendor (scripts/probe_vision.py), not assumed from the model name.
     Without the flag the planner answered "I cannot read the picture" about the image it had
-    just generated (decisions/0041).
+    just generated (docs/architecture/agent-runtime.md).
     """
     with api.c.uow_factory() as uow:
         planner = uow.profiles.planner_for_agent("image")

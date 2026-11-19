@@ -1,4 +1,4 @@
-"""Structured user questions (decisions/0037). The planner calls this instead of embedding
+"""Structured user questions (docs/architecture/agent-runtime.md). The planner calls this instead of embedding
 questions in free-form JSON. Runtime turns the result into chat `answer` events and optional
 reply buttons. No model call, no Version, no credit charge."""
 

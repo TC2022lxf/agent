@@ -1,4 +1,4 @@
-"""System prompt sections (docs/04). Specs and boundaries, not personality.
+"""System prompt sections (docs/architecture/agent-runtime.md). Specs and boundaries, not personality.
 
 Modelled on how shipping agents write theirs (Manus agent loop, v0's guideline sections):
 mostly concrete rules and capability boundaries, with one sentence of identity at most.

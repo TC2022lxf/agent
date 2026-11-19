@@ -1,4 +1,4 @@
-"""Auth, account and billing routes (docs/07 "认证与账号", docs/11 section 2-3).
+"""Auth, account and billing routes (docs/architecture/agent-runtime.md "认证与账号", docs/architecture/data-and-contracts.md section 2-3).
 
 Route bodies stay thin: identity rules live in `services/identity.py`, money rules in
 `services/credits.py` and `services/billing.py`. What happens here is HTTP shape only —
@@ -58,7 +58,7 @@ def _translate(exc: Exception) -> ApiError:
 
 
 def set_session_cookies(response: Response, token: str, csrf: str, *, secure: bool) -> None:
-    """HttpOnly session + a readable CSRF cookie (double submit, docs/11 section 2)."""
+    """HttpOnly session + a readable CSRF cookie (double submit, docs/architecture/data-and-contracts.md section 2)."""
     max_age = 14 * 24 * 3600
     response.set_cookie(
         SESSION_COOKIE, token, max_age=max_age, httponly=True, samesite="lax",

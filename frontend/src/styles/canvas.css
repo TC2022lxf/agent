@@ -1,4 +1,4 @@
-/* Canvas Agent workspace (decisions/0029, 0031). Chrome follows stitch_demo/workspace.html
+/* Canvas Agent workspace (docs/architecture/data-and-contracts.md, 0031). Chrome follows stitch_demo/workspace.html
    (overlay top bar, glass context card, bottom prompt dock, zoom pill) and uses the app
    theme tokens, not a second palette. The Image Agent preview does not use these classes. */
 

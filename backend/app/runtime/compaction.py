@@ -1,4 +1,4 @@
-"""Compaction prompt and call (docs/07). Shared by the automatic trigger and `/compact`.
+"""Compaction prompt and call (docs/architecture/agent-runtime.md). Shared by the automatic trigger and `/compact`.
 
 DeerFlow's summarization prompt asks for four sections and this keeps that shape, because
 the failure mode it prevents is specific: after compaction the planner forgets which

@@ -248,7 +248,7 @@ function TopupQueue() {
   )
 }
 
-/** `/admin/users`: who exists, their balance, invites, and pending recharges (docs/13). */
+/** `/admin/users`: who exists, their balance, invites, and pending recharges (docs/architecture/agent-runtime.md). */
 export function AdminUsersView() {
   const api = useApi()
   const users = useQuery({ queryKey: ['admin-users'], queryFn: () => api.adminUsers() })

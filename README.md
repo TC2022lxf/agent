@@ -1,37 +1,34 @@
-# Ecommerce AI Agent
+# Ecommerce AI：人与 Agent 共用的工作台
 
-人和 Agent 协作的电商内容工作台，包含 FastAPI 后端、React 前端、Agent 技能、产品示例和设计资料。
+面向电商内容创作的协作应用：在同一任务中交流目标、生成与修改内容、查看版本和检查结果。包含通用对话、PDP 文案、图像和 Canvas 工作台。**定时自动化仍是占位，不是已交付能力。**
 
-## 项目结构
+这个仓库本身也是人与编程 Agent 共用的 workspace：人通过文档定义工作并验证交付，Agent 依同一套契约实施，而不是维护另一套只有模型理解的说明。
 
-- `backend/`：Python 后端、Agent 运行时、API、脚本和测试。
-- `frontend/`：React + TypeScript + Vite 前端及测试。
-- `skills/`：项目使用的 Agent 技能及相关许可证。
-- `fixtures/`：产品示例、图片及采集脚本。
-- `docs/`：现有决策记录、实验记录和自动生成的接口资料。
-- `design/`：设计稿和页面原型。
-- `.env.example`：不含密钥的配置示例。
+## 从你的工作出发
 
-## 本地运行（Windows PowerShell）
+| 我想做什么 | 从这里开始 |
+| --- | --- |
+| 理解产品、当前能力与限制 | [能力清单](docs/product/capabilities.md)、[候选需求](docs/product/requirements.md) |
+| 给 AI 下任务并验收 | [协作流程](CONTRIBUTING.md)、[产品验收场景](docs/product/acceptance.md)、[需求追踪](docs/quality/traceability.md) |
+| 启动、调试、修改代码 | [本地开发](docs/development/local-development.md)、[系统架构](docs/architecture/system.md) |
+| 作为编程 Agent 开始工作 | [AGENTS.md](AGENTS.md)，再按任务阅读正文 |
+| 查看本轮验证结果和待决问题 | [验证报告](docs/releases/2026-11-19-baseline-verification.md)、[探索与差距](docs/exploration/current-state.md) |
+| 查找全部资料和权威来源 | [文档地图](docs/README.md) |
 
-需要 Python 3.12 或以上版本，以及支持项目 Vite 版本的 Node.js / npm。
+## 最短启动（Windows PowerShell）
 
-在项目根目录按需复制配置：
-
-```powershell
-Copy-Item .env.example .env
-```
-
-启动后端：
+需要 Python 3.12+、Node.js 22 / npm。以下命令从项目根目录开始；离线 fake 网关不需要模型密钥。
 
 ```powershell
+if (-not (Test-Path -LiteralPath .env)) { Copy-Item -LiteralPath .env.example -Destination .env }
 cd backend
 python -m venv .venv
 .\.venv\Scripts\python -m pip install -e ".[dev]"
+$env:GATEWAY="fake"
 .\.venv\Scripts\python -m uvicorn app.main:create_app --factory --port 8000
 ```
 
-另开终端启动前端：
+另开终端，从项目根目录启动前端：
 
 ```powershell
 cd frontend
@@ -39,26 +36,19 @@ npm ci
 npm run dev
 ```
 
-浏览器打开 http://localhost:5173。默认 `GATEWAY=fake`，无需模型 API 密钥。使用真实模型时，在本地 `.env` 中配置服务地址、密钥和模型名称。
+打开 http://localhost:5173。默认开发身份不是生产登录方案；账户模式、配置和隔离要求见[开发指南](docs/development/local-development.md)。不应将开发服务直接暴露到公网。
 
-## 检查与测试
+## 仓库导航
 
-后端（在 `backend/` 内，使用已安装开发依赖的虚拟环境）：
+- `backend/`：FastAPI、Agent runtime、领域与服务、测试和脚本。
+- `frontend/`：React / TypeScript / Vite 工作台与组件测试。
+- `skills/`：**产品运行时**技能及许可证，不是本机 Codex 设置。
+- `fixtures/`：产品样例；`design/`：视觉原型。二者不是需求或验收的权威来源。
+- `docs/`：共享产品、架构、开发、质量与运维契约。
+- `scripts/`：workspace 维护工具；`.github/workflows/`：离线检查配置。
 
-```powershell
-.\.venv\Scripts\python -m pytest -m "not live"
-```
+## 什么算完成
 
-前端（在 `frontend/` 内）：
+不是 AI 说“写好了”，也不是单看测试全绿。按[验收标准](docs/product/acceptance.md)检查用户目标，按[测试策略](docs/quality/test-strategy.md)复核技术证据，最后由人决定接受与发布。真实模型效果、性能、安全和产品人工验收未执行时必须显式保留。
 
-```powershell
-npm run typecheck
-npm test
-npm run build
-```
-
-真实模型相关测试可能产生费用，不应在未确认配置时运行。
-
-## 不纳入版本控制的内容
-
-真实 `.env` 和密钥、虚拟环境、`node_modules`、构建产物、运行数据库、用户上传数据和缓存不上传。克隆后需要重新安装依赖；运行时数据会在本地生成。
+状态：代码现状入口；核验日期：2026-11-19。本文不是产品验收签署。

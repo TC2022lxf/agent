@@ -7,7 +7,7 @@ import { useAuth } from '../state/auth'
 type Mode = 'login' | 'register'
 
 /**
- * Sign in or sign up (docs/11 section 2).
+ * Sign in or sign up (docs/architecture/data-and-contracts.md section 2).
  *
  * Registration needs an invite code because the product is in invite-only beta. The access
  * key is shown exactly once and cannot be recovered: only its hash is stored, and support

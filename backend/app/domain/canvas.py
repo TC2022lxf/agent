@@ -1,4 +1,4 @@
-﻿"""Canvas board (decisions/0029). Pure functions: no database, no store, no model.
+"""Canvas board (docs/architecture/data-and-contracts.md). Pure functions: no database, no store, no model.
 
 A canvas is a BOARD, modelled on Stitch: several screens laid out on an infinite surface,
 each screen a frame with modules, plus edges that describe a clickable flow. One board is one
@@ -27,7 +27,7 @@ MAX_MODULES = 24
 MAX_SCREENS = 12
 # A fresh board is a blank sheet: 1280 wide (the size Stitch previews a design at). Nothing
 # here knows what the page is for — Amazon, a landing page, a poster — that comes from the
-# user's sentence, not from a default (decisions/0031).
+# user's sentence, not from a default (docs/architecture/data-and-contracts.md).
 DEFAULT_SCREEN_WIDTH = 1280
 MIN_SCREEN_HEIGHT = 120
 MAX_FRAME_SIDE = 4000
@@ -59,7 +59,7 @@ def empty_board(height: int = 720) -> dict[str, Any]:
     Deliberately empty of placeholder copy. It used to ship a "首屏标题" headline and a
     "产品主图" picture slot, which the model then treated as the brief and produced an Amazon
     product card whatever the user asked for. A blank screen forces the content to come from
-    the user's sentence (decisions/0031).
+    the user's sentence (docs/architecture/data-and-contracts.md).
     """
     return {
         "theme": {k: (dict(v) if isinstance(v, dict) else v) for k, v in DEFAULT_THEME.items()},
@@ -75,7 +75,7 @@ def empty_board(height: int = 720) -> dict[str, Any]:
 
 
 def board_for_picture(prompt: str, height: int = 720) -> dict[str, Any]:
-    """A board holding one picture: the picture request IS the design (decisions/0031).
+    """A board holding one picture: the picture request IS the design (docs/architecture/data-and-contracts.md).
 
     This is what a canvas is for. The screen carries one image module whose prompt is the
     user's sentence, so the board can show a placeholder immediately and the picture lands in
@@ -265,14 +265,14 @@ def _module(raw: Any, theme: dict[str, Any], screen_id: str) -> dict[str, Any]:
         "style": _image_style(style), "slot": slot,
     }
     # The prompt that produced the picture belongs to the board, not only to a Tool call:
-    # an external agent reading the canvas must be able to see it (decisions/0030).
+    # an external agent reading the canvas must be able to see it (docs/architecture/system.md).
     prompt = raw.get("prompt")
     if isinstance(prompt, str) and prompt.strip():
         if len(prompt) > MAX_TEXT_CHARS:
             raise CanvasError(f"模块 {mid} 的提示词超过 {MAX_TEXT_CHARS} 字")
         item["prompt"] = prompt.strip()
     # `ref` names another image module whose picture was the reference. Screen `edges` stay
-    # the clickable flow; this is a different relationship (decisions/0034).
+    # the clickable flow; this is a different relationship (docs/architecture/system.md).
     ref = raw.get("ref")
     if isinstance(ref, str) and ref.strip():
         if len(ref.strip()) > 32:

@@ -1,7 +1,7 @@
 """Canvas edits as one operation: validate against the current Version, commit a new one.
 
 Two callers need this and must not drift apart: the HTTP route a user's drag posts to, and the
-MCP server an external agent drives (decisions/0030). Both go through `CanvasEditor`, so a
+MCP server an external agent drives (docs/architecture/system.md). Both go through `CanvasEditor`, so a
 write from Claude Code obeys exactly the same version rules as a drag in the browser.
 """
 

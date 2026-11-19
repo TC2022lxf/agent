@@ -1,4 +1,4 @@
-"""Suggested follow-ups: what the user probably wants to ask next (docs/06).
+"""Suggested follow-ups: what the user probably wants to ask next (docs/architecture/system.md).
 
 This is NOT `ask_question`. `ask_question` is a blocking Tool call inside the plan loop: the
 Agent cannot continue without a fact. A follow-up is a rendering hint after the turn is over,
@@ -11,7 +11,7 @@ Why a second model call instead of asking the planner to emit them: the main rep
 JSON object streamed to the user, and appending "and also three questions" to that contract
 makes the planner hedge its answer or repeat the questions in the reply. A separate call
 also fails independently — a timeout here means no chips, not a failed Run — and it can be
-bound to a cheaper model without touching the planner (decisions/0042).
+bound to a cheaper model without touching the planner (docs/architecture/agent-runtime.md).
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Accounts, sessions, invites, roles and money (docs/11, docs/13).
+"""Accounts, sessions, invites, roles and money (docs/architecture/data-and-contracts.md, docs/architecture/agent-runtime.md).
 
 These tests run the real HTTP surface: cookies, CSRF, 401/402/403 codes, and the ledger.
 The point is that the infrastructure is closed at one place each, so a test here covers

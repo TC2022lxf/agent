@@ -1,4 +1,4 @@
-"""Gateway decorator: records every model call as llm_calls (docs/11). Tools never log."""
+"""Gateway decorator: records every model call as llm_calls (docs/architecture/data-and-contracts.md). Tools never log."""
 
 from __future__ import annotations
 

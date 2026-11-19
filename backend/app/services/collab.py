@@ -1,6 +1,6 @@
-﻿"""Collaboration service: tasks, artifacts, versions, feedback, constraints, runs.
+"""Collaboration service: tasks, artifacts, versions, feedback, constraints, runs.
 
-Invariants live here (docs/03): versions are never overwritten, slot pointers move one
+Invariants live here (docs/architecture/data-and-contracts.md): versions are never overwritten, slot pointers move one
 at a time, rejected versions never become current, one active Run per Task.
 """
 
@@ -117,7 +117,7 @@ class CollabService:
             self.s.flush()
         return a
 
-    # ---- canvas (decisions/0025) -------------------------------------------
+    # ---- canvas (docs/architecture/data-and-contracts.md) -------------------------------------------
     def canvas_artifact(self, task_id: str, *, create: bool = False) -> Artifact:
         a = self.s.scalar(
             select(Artifact).where(
@@ -156,7 +156,7 @@ class CollabService:
 
         The canvas is the only place where a Version decides the current pointer of other
         artifacts (`canvas_image_N`). That is done in `activate_canvas_version`, not by
-        `commit_output`, so PDP binding keeps its own rule (decisions/0025).
+        `commit_output`, so PDP binding keeps its own rule (docs/architecture/data-and-contracts.md).
         """
         art = self.canvas_artifact(task_id, create=True)
         prev = self.s.get(Version, art.current_version_id) if art.current_version_id else None

@@ -70,6 +70,10 @@ class RunFailed(GraphBubbleUp):
         super().__init__(message)
 
 
+class ListingContextError(ValueError):
+    """The planner supplied a listing base that cannot be used for this Task slot."""
+
+
 @dataclass
 class StopAfter:
     """Test hook: raise WorkerStopped after this many new commits. `seen` survives a requeue."""
@@ -101,14 +105,14 @@ class LoopContext:
     prior_texts: list[str] = field(default_factory=list)
     skill_id: str | None = None  # `/skill`: this Run is narrowed to one Skill
     attachments: list[dict[str, Any]] = field(default_factory=list)
-    target_slot: str | None = None  # the Feedback's write boundary (docs/03, 04)
+    target_slot: str | None = None  # the Feedback's write boundary (docs/architecture/data-and-contracts.md, 04)
     target_region: dict[str, float] | None = None  # UI circle; copied into edit_product_image
     # The Version the user pointed at in the UI. It is the picture being edited, so the model
-    # must SEE it, not only the current one (decisions/0041).
+    # must SEE it, not only the current one (docs/architecture/agent-runtime.md).
     target_version_id: str = ""
     # The `ask_question` this sentence answers, when it answers one. The loop needs it to
     # treat the sentence as the missing fact of work already open instead of a fresh brief
-    # (a reply "一个电动剃须刀" once became a from-scratch generate call, decisions/0043).
+    # (a reply "一个电动剃须刀" once became a from-scratch generate call, docs/architecture/system.md).
     replying_to: str = ""
     client_hint: str = ""  # `constraint` / `preference` from the composer chip
 
@@ -138,6 +142,9 @@ class _Session:
     on_path: Any
     image_caps: set[str]
     max_calls: int
+    goal: str = ""
+    facts: dict[str, Any] = field(default_factory=dict)
+    item: Item | None = None
     on_progress: Any = None  # (stage, detail) -> None; a `step` event for the waiting user
     on_human_input: Any = None  # payload -> None; `human_input_request` run event (ask_question)
     on_delta: Any = None  # (partial text) -> None; `answer_delta` while the reply streams
@@ -192,7 +199,7 @@ class _Session:
 
         Without this the planner answered "I cannot read the colour from the current version"
         about a picture it had generated one turn earlier: the payload carried an object key,
-        which is a file name to the model, not a picture (decisions/0041).
+        which is a file name to the model, not a picture (docs/architecture/agent-runtime.md).
 
         The BASE version is included when this turn edits one. "这一版和上一版比一下" and
         "keep what you just did, change only the background" both need the picture being
@@ -322,6 +329,16 @@ class _Session:
 
     def _handle(self, name: str, args: dict[str, Any]) -> str:
         args = _plain(args)
+        if name == "edit_listing":
+            try:
+                args = self._fill_listing_context(args)
+            except ListingContextError as exc:
+                message = str(exc)
+                slot = _slot_of(name, args)
+                tool_call_id = f"{self.ctx.run_id}:{name}:{_call_identity(name, args, slot)}"
+                self._record_error(name, tool_call_id, args, message)
+                self.declined = message
+                return message
         if self.awaiting_user:
             return "已向用户提问，本轮不要再调用其他工具。"
         if name == "ask_question":
@@ -364,7 +381,7 @@ class _Session:
         tool_cost = meta.cost_credits
         available = self.ctx.held - self.ctx.spent - self.cost
         if tool_cost > available:
-            # docs/11: reaching the frozen budget stops the Run. It fails instead of quietly
+            # docs/architecture/data-and-contracts.md: reaching the frozen budget stops the Run. It fails instead of quietly
             # declining, so the user sees "预算用完" rather than a tool that did nothing.
             self._record_error(
                 name, tool_call_id, args,
@@ -453,7 +470,7 @@ class _Session:
         if self.ctx.target_slot and slot != self.ctx.target_slot:
             # A canvas turn is bound to `canvas`, but placing a picture on that canvas needs
             # `canvas_image_N`. Treat the canvas and its own picture slots as one boundary:
-            # a bound canvas turn may write its modules, but nothing else (decisions/0031).
+            # a bound canvas turn may write its modules, but nothing else (docs/architecture/data-and-contracts.md).
             same_canvas = (
                 self.ctx.target_slot == slot_registry.CANVAS_SLOT
                 and slot_registry.canvas_module_index(slot) is not None
@@ -586,7 +603,7 @@ class _Session:
 
     def _fill_canvas_pointers(self, args: dict[str, Any]) -> dict[str, Any]:
         """Image modules point at a version. The planner may name only the slot, so fill in the
-        slot's current version when the module has no pointer yet (decisions/0025, 0029)."""
+        slot's current version when the module has no pointer yet (docs/architecture/data-and-contracts.md, 0029)."""
         content = args.get("content")
         if not isinstance(content, dict):
             return args
@@ -651,6 +668,79 @@ class _Session:
             filled["base_object_key"] = current.content.get("object_key")
         return filled
 
+    def _listing_base(self, base_id: str, slot: str) -> tuple[str, dict[str, Any]]:
+        """Validate an explicit base before reading its content or paying the model.
+
+        Version ids are user/planner supplied and must stay inside the current Task's write
+        boundary. A missing, foreign-task, or wrong-slot id cannot be silently ignored: the
+        call would otherwise proceed without a base and potentially commit a broken chain.
+        """
+        try:
+            with self.uow_factory() as uow:
+                version = uow.collab.get_version(base_id)
+                artifact = uow.collab.slot_artifact(self.ctx.task_id, slot)
+                if version.task_id != self.ctx.task_id or version.artifact_id != artifact.id:
+                    raise ListingContextError(
+                        "base_version_id must belong to the current task and slot"
+                    )
+                return version.id, dict(version.content or {})
+        except NotFound as exc:
+            raise ListingContextError(
+                "base_version_id must belong to the current task and slot"
+            ) from exc
+
+    def _fill_listing_context(self, args: dict[str, Any]) -> dict[str, Any]:
+        """Restore the Task context the planner often omits from `edit_listing` calls.
+
+        The planner already receives the goal and product facts in its view. A real model,
+        however, can call the tool with only `{"slot": "title"}`. Passing that through made the
+        listing model write from an empty brief, and the empty reply was committed as a Version.
+        Fill missing context here, before the tool-call identity is computed or the vendor is paid.
+        """
+        filled = dict(args)
+        if not str(filled.get("goal") or "").strip():
+            filled["goal"] = self.goal
+        facts = filled.get("facts")
+        if not isinstance(facts, dict) or not facts:
+            filled["facts"] = dict(self.facts)
+
+        slot = str(filled.get("slot") or "")
+        base_id = str(filled.get("base_version_id") or "")
+        base = filled.get("base")
+
+        # A UI-selected base takes precedence over the current Version. Otherwise an edit of
+        # the current text should inherit both its id and content without asking the planner
+        # to repeat potentially large JSON.
+        provided_base = self._listing_base(base_id, slot) if base_id else None
+        candidate_id = ""
+        candidate_content: dict[str, Any] | None = None
+        if self.item is not None and self.item.slot == slot and self.item.base_override:
+            candidate_id = self.item.base_override.version_id
+            candidate_content = dict(self.item.base_override.content)
+        elif provided_base is not None:
+            candidate_id, candidate_content = provided_base
+        else:
+            try:
+                with self.uow_factory() as uow:
+                    current = uow.collab.current_version(self.ctx.task_id, slot)
+                if current is not None:
+                    candidate_id = current.id
+                    candidate_content = dict(current.content or {})
+            except NotFound:
+                pass
+
+        if not filled.get("base_version_id") and candidate_id:
+            filled["base_version_id"] = candidate_id
+        if not isinstance(base, dict) and candidate_content is not None:
+            filled["base"] = candidate_content
+        if (
+            not str(filled.get("instruction") or "").strip()
+            and candidate_content is not None
+            and self.item is not None
+        ):
+            filled["instruction"] = self.item.text
+        return filled
+
     def _fill_image_region(self, args: dict[str, Any]) -> dict[str, Any]:
         """The UI circle is the write boundary; the planner must not drop it."""
         if isinstance(args.get("region"), dict) and args["region"].get("w"):
@@ -667,7 +757,7 @@ class _Session:
         return {**args, "region": {"x": x, "y": y, "w": w, "h": h}}
 
     def _record_human_input(self, tool_call_id: str, question: str, options: list[str]) -> None:
-        """ask_question is an interaction event, not assistant prose (decisions/0037)."""
+        """ask_question is an interaction event, not assistant prose (docs/architecture/agent-runtime.md)."""
         payload = _human_input_payload(tool_call_id, question, options)
         if any(r.get("request_id") == tool_call_id for r in self.human_input_requests):
             self.awaiting_user = True
@@ -950,7 +1040,7 @@ class _Session:
 
         `generate_product_image` writes an image slot; the board only shows it once its
         manifest points there. Doing that here means the placeholder a user is looking at is
-        replaced by the picture without a second turn (decisions/0031).
+        replaced by the picture without a second turn (docs/architecture/data-and-contracts.md).
         """
         with self.uow_factory() as uow:
             current = uow.collab.canvas_version(self.ctx.task_id)
@@ -1191,7 +1281,7 @@ class GatewayChatModel(BaseChatModel):
             # The review step gets more than "after_tools". It gets what the tools produced
             # and what the turn was asked to do, so its reply can be about THIS request
             # instead of a generic offer (a real run answered "which image should I make?" to
-            # a user who had just been given a picture, decisions/0041).
+            # a user who had just been given a picture, docs/architecture/agent-runtime.md).
             user = json.dumps(
                 {"phase": "after_tools", **_review_context(messages, self.session)},
                 ensure_ascii=False,
@@ -1221,7 +1311,7 @@ class GatewayChatModel(BaseChatModel):
                 # The review reply IS the answer to the turn: it is what the model says after
                 # the Tool ran ("主图已生成，背景是纯白的"). Skipping it left the turn with a
                 # Version and no words, so the chat showed a delivered image and the model
-                # still looked like it was thinking (decisions/0041).
+                # still looked like it was thinking (docs/architecture/agent-runtime.md).
                 self.session.note_review(data)
             else:
                 self.session.note_plan(data)
@@ -1401,7 +1491,7 @@ def _review_context(messages: list[Any], session: Any) -> dict[str, Any]:
     tool had run but not which one, what it returned, or what the user had asked. That is how
     a run that had just produced a picture ended with "What image should I make, and what
     product is it for?". The facts are already in the graph state; they were simply not passed
-    on (decisions/0041).
+    on (docs/architecture/agent-runtime.md).
     """
     request = ""
     for message in messages:
@@ -1576,6 +1666,7 @@ class LangGraphLoop:
         session = _Session(
             ctx, self.uow_factory, self.tools, self.evaluators, self.store,
             _path_writer(self.uow_factory), caps, max_calls,
+            goal=view.goal, facts=dict(view.facts), item=item,
             on_progress=_progress_writer(self.uow_factory),
             on_human_input=_human_input_writer(self.uow_factory),
             on_delta=_answer_delta_writer(self.uow_factory),
@@ -1669,7 +1760,7 @@ def _path_writer(uow_factory: UowFactory) -> Any:
             if step.startswith("tool:") or step not in path:
                 run.path = [*path, step]
             # A `step` event is what the waiting user sees. Without it the only progress was
-            # one "已读取偏好与约束" line, so a two-minute image looked hung (docs/06).
+            # one "已读取偏好与约束" line, so a two-minute image looked hung (docs/architecture/system.md).
             uow.collab.add_event(
                 run_id, "step", {"stage": stage_of(step), "detail": step},
             )
@@ -1913,7 +2004,7 @@ def _slot_hint(kind: str, key: str, description: str) -> str:
 def _writable_slots(kind: str) -> list[dict[str, Any]]:
     """What `slot` / `path` may be on this Task. The model used to have to guess these.
 
-    Sizes are not repeated here: the constraint pack owns the numbers (docs/09).
+    Sizes are not repeated here: the constraint pack owns the numbers (docs/architecture/data-and-contracts.md).
     """
     out: list[dict[str, Any]] = []
     if kind == "canvas":

@@ -1,4 +1,4 @@
-"""RunExecutor: docs/07 steps 6-14 in their thinnest form.
+"""RunExecutor: docs/architecture/agent-runtime.md steps 6-14 in their thinnest form.
 
 claim -> load context -> interpret -> per item: plan -> ToolRunner -> WriteScopeGuard ->
 commit Version -> rule evaluation -> (bind to PDP) -> settle credits.
@@ -102,7 +102,7 @@ _RUN_FAILED_TEXT = {
 
 
 def _run_failed_text(code: str) -> str:
-    """A Run-level failure code is for logs; the user gets a sentence (docs/06)."""
+    """A Run-level failure code is for logs; the user gets a sentence (docs/architecture/system.md)."""
     return _RUN_FAILED_TEXT.get(code, code)
 
 
@@ -155,7 +155,7 @@ class RunExecutor:
             self._requeue(run_id)
         except RunFailed as exc:
             # Budget or step limit reached: the work that already happened is still charged
-            # (docs/11 "用户原因或正常结束：按已发生的成本结算").
+            # (docs/architecture/data-and-contracts.md "用户原因或正常结束：按已发生的成本结算").
             self._finish(run_id, "failed", error=_run_failed_text(exc.message),
                          cost=self._spent(run_id))
         except ProfileDisabled as exc:
@@ -163,7 +163,7 @@ class RunExecutor:
         except Exception as e:
             log.exception("run %s failed", run_id)
             # Anything unclassified is our side (vendor 5xx, timeout, crash), so the user is
-            # not charged for it. docs/11 section 3, "失败的规则".
+            # not charged for it. docs/architecture/data-and-contracts.md section 3, "失败的规则".
             self._finish(run_id, "failed", error=_readable_error(e), platform_fault=True)
         finally:
             current_run_id.reset(token)
@@ -253,7 +253,7 @@ class RunExecutor:
 
         # Follow-ups are the last thing a finished turn does. They are a separate, skippable
         # call: they never change what was produced, and they are not asked for while the
-        # Agent is waiting on a real question (decisions/0042).
+        # Agent is waiting on a real question (docs/architecture/agent-runtime.md).
         if last_answer and last_fb and not pending_human and self._followups_on():
             self._suggest_followups(run_id, task_id, agent_key, last_fb, payload.get("text", ""))
 
@@ -272,7 +272,7 @@ class RunExecutor:
         """Attach 2-3 next questions to the answer that was just recorded.
 
         A separate model call on its own budget line, so it can be bound to a cheaper model
-        and can fail without touching the Run (docs/06).
+        and can fail without touching the Run (docs/architecture/system.md).
         """
         with self.uow_factory() as uow:
             answer = ""

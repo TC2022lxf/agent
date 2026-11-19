@@ -1,7 +1,7 @@
 """Live probe: does a real planner see the picture, and does the turn end with words?
 
 Runs against whatever `.env` binds, through the real HTTP surface. Costs real credits and one
-image. Not a test: it is the experiment behind decisions/0041, and it prints what actually
+image. Not a test: it is the experiment behind docs/architecture/agent-runtime.md, and it prints what actually
 came back so a mismatch is visible rather than guessed at.
 
     cd backend

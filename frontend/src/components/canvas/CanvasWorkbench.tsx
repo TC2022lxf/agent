@@ -29,7 +29,7 @@ import {
 import { useFitOnce, useViewport, worldTransform } from './useViewport'
 
 /**
- * The canvas board (decisions/0025, 0029), modelled on an AI design canvas: several screens
+ * The canvas board (docs/architecture/data-and-contracts.md, 0029), modelled on an AI design canvas: several screens
  * side by side on one surface, each laying out modules, plus the clickable flow between them.
  *
  * One gesture becomes ONE `canvas-patches` call on release: the layout is a Version, not local
@@ -294,7 +294,7 @@ export function CanvasWorkbench({
                           ) : (
                             // A picture that has not been drawn yet is a placeholder card, not an
                             // empty box: it shows the prompt waiting for it, and it is what the
-                            // first generate call will fill (decisions/0031).
+                            // first generate call will fill (docs/architecture/data-and-contracts.md).
                             <div className={`canvas-img is-pending${busy ? ' is-working' : ''}`}>
                               <span className="canvas-img-badge">{busy ? '生成中' : '待生成'}</span>
                               {m.prompt && <span className="canvas-img-prompt">{m.prompt}</span>}

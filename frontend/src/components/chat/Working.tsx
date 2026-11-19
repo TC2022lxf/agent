@@ -9,7 +9,7 @@ import { streamingOf } from '../../lib/streaming'
  *
  * Once the reply starts arriving it is shown as written, with the stage line underneath: the
  * answer used to appear only when the Run ended, so a model that had already said what it was
- * doing still looked like it was thinking (docs/06).
+ * doing still looked like it was thinking (docs/architecture/system.md).
  *
  * The elapsed time is client-side only. It starts when this line mounts, which is the moment
  * the Run was accepted, so it is honest to within a poll interval and costs no server state.

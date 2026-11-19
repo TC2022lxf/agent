@@ -1,4 +1,4 @@
-"""Credits: an append-only ledger is the only source of truth (docs/11, decisions/0004).
+"""Credits: an append-only ledger is the only source of truth (docs/architecture/data-and-contracts.md, docs/architecture/data-and-contracts.md).
 
 1 credit = 0.01 CNY, integers only. Every write carries an idempotency key, so a retried
 request or a replayed payment callback cannot charge twice.

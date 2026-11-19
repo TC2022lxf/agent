@@ -5,7 +5,7 @@ export type ViewName =
   | 'home' | 'chat' | 'history' | 'artifacts' | 'products' | 'tools' | 'skills'
   | 'automation' | 'canvas' | 'image' | 'console' | 'account' | 'admin'
 
-/** Which workbench is open in the right-hand drawer (docs/06). */
+/** Which workbench is open in the right-hand drawer (docs/architecture/system.md). */
 export interface DrawerTarget {
   kind: 'pdp' | 'image' | 'rules' | 'file'
   slot?: SlotKey
@@ -20,7 +20,7 @@ export interface FocusTarget {
 
 export interface NavState {
   view: ViewName
-  /** Entry the user chose: `general` or `amazon_pdp` for the chat view (decisions/0010). */
+  /** Entry the user chose: `general` or `amazon_pdp` for the chat view (docs/architecture/system.md). */
   agent: string
   taskId: string | null
   drawer: DrawerTarget | null

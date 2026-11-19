@@ -1,4 +1,4 @@
-"""Prompt content (docs/04). Specs and boundaries, not personality.
+"""Prompt content (docs/architecture/agent-runtime.md). Specs and boundaries, not personality.
 
 These assert the *contract*, not the wording: a section must exist and must state a rule the
 product actually enforces. Rewording is fine; deleting the rule is not.
@@ -82,7 +82,7 @@ def test_plan_contract_says_what_the_review_step_is() -> None:
 
     A real run answered "What image should I make?" to a user who had just been given a
     picture. The contract now states what that payload means and forbids asking there
-    (decisions/0041).
+    (docs/architecture/agent-runtime.md).
     """
     assert '"phase": "after_tools"' in PLAN_CONTRACT
     assert "tool_results" in PLAN_CONTRACT and "versions_written" in PLAN_CONTRACT

@@ -1,10 +1,11 @@
-﻿"""Live smoke test against the real gateway. Skipped unless GATEWAY=openai and a key is set.
+"""Live smoke test against the real gateway. Skipped unless GATEWAY=openai and a key is set.
 
     cd backend
     $env:GATEWAY="openai"; .\\.venv\\Scripts\\python -m pytest tests/test_live_gateway.py -q
 
-These call a paid vendor. They are marked `live` and excluded from the default run:
-`pytest -m "not live"` is what CI uses. Each test names what it proves so a failure is
+These call a paid vendor. They are marked `live`, but a plain pytest run is NOT
+guaranteed to exclude them. Explicitly use `pytest -m "not live"` for offline runs
+and in CI. Each test names what it proves so a failure is
 actionable: a red one means the vendor shape changed, not that the product logic broke.
 """
 

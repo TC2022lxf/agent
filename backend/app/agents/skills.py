@@ -1,4 +1,4 @@
-"""Skill parsing (docs/04). A Skill is Markdown with front matter; the id is its directory.
+"""Skill parsing (docs/architecture/agent-runtime.md). A Skill is Markdown with front matter; the id is its directory.
 
 `audience` decides which Agents may use it: `pdp`, `image` and `canvas` are specialist-only,
 `general` is usable by the general entry (which also aggregates the specialists).

@@ -1,4 +1,4 @@
-"""Tool port (docs/07). A Tool does one atomic thing; it never touches the database,
+"""Tool port (docs/architecture/agent-runtime.md). A Tool does one atomic thing; it never touches the database,
 writes Versions, deducts credits or writes logs. Wrapping is ToolRunner's job."""
 
 from __future__ import annotations

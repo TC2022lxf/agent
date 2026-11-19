@@ -1,4 +1,4 @@
-"""Skill audience rules and editing (docs/13). Edits are revisions, not file overwrites."""
+"""Skill audience rules and editing (docs/architecture/agent-runtime.md). Edits are revisions, not file overwrites."""
 
 from __future__ import annotations
 

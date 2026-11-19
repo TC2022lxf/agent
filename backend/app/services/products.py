@@ -1,4 +1,4 @@
-"""Product service: facts and imported listing the Agent may use (docs/09).
+"""Product service: facts and imported listing the Agent may use (docs/architecture/data-and-contracts.md).
 
 Samples are real saved listings from `fixtures/` loaded through the same path as user input.
 """

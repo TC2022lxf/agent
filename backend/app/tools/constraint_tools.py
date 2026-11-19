@@ -1,11 +1,11 @@
-"""Record a standing rule instead of guessing what the user meant (decisions/0044).
+"""Record a standing rule instead of guessing what the user meant (docs/architecture/agent-runtime.md).
 
 There used to be a separate interpret call before the loop whose only unique job was to tell
 "this is a rule for every later turn" apart from "change this output". That decision is a
 decision the agent can make with the same context it uses to choose any other tool, so it is
 a tool: the model either calls `record_constraint` or it does not.
 
-Nothing here is applied. A draft is recorded and the user confirms it (docs/03); an
+Nothing here is applied. A draft is recorded and the user confirms it (docs/architecture/data-and-contracts.md); an
 unconfirmed rule must never change what a later Version is allowed to be.
 """
 

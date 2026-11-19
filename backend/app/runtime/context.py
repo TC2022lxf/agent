@@ -1,4 +1,4 @@
-"""Conversation context for the planner (docs/07). Compaction, Cursor-style.
+"""Conversation context for the planner (docs/architecture/agent-runtime.md). Compaction, Cursor-style.
 
 What the planner sees on a turn is not the raw chat log:
 
@@ -105,7 +105,7 @@ def build_turn_lines(uow: UnitOfWork, task: Task) -> list[TurnLine]:
     (`ask_question`), and — when this turn is the user replying to one — which question the
     sentence answers. Leaving the question out meant the next Run saw a bare "一个电动剃须刀"
     with nothing it was replying to, which is a context break, not a follow-up
-    (decisions/0037, 0043).
+    (docs/architecture/agent-runtime.md, 0043).
     """
     slots = {a.id: a.slot for a in uow.collab.artifacts(task.id)}
     stated: dict[str, list[str]] = {}

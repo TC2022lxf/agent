@@ -1,4 +1,4 @@
-"""Worker loop. API process only enqueues; a worker executes (decisions/0003)."""
+"""Worker loop. API process only enqueues; a worker executes (docs/architecture/system.md)."""
 
 from __future__ import annotations
 

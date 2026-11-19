@@ -1,4 +1,4 @@
-"""The MVP agents plus the canvas specialist (decisions/0010, 0025).
+"""The MVP agents plus the canvas specialist (docs/architecture/system.md, 0025).
 
 One registration each; `general` only aggregates, and file tools are a grant, not a fifth agent.
 """
@@ -37,7 +37,7 @@ from app.tools.web_tools import WebFetchTool, WebSearchTool
 SKILLS_DIR = Path(__file__).resolve().parents[3] / "skills"
 
 # Tools every Agent has: reading history, a visible plan, asking for a missing picture, and
-# recording a standing rule instead of only promising to follow it (decisions/0044).
+# recording a standing rule instead of only promising to follow it (docs/architecture/agent-runtime.md).
 _COMMON = ("ask_question", "record_constraint", "list_versions", "write_todos", "request_upload")
 # Only agents that write pictures can measure, repair or branch one.
 _IMAGE = ("inspect_image", "fix_image", "image_variants")
@@ -126,7 +126,7 @@ def build_registry(skills_dir: Path = SKILLS_DIR) -> Registry:
         "One conversation for any artifact: writes files and images, opens the matching preview.",
         ("amazon_pdp", "image", "canvas"),
     )
-    # File tools and web tools are not another specialist. See decisions/0017 and 0035.
+    # File tools and web tools are not another specialist. See docs/architecture/agent-runtime.md and 0035.
     r.grant(
         "general",
         tools=("write_file", "read_file", "web_search", "web_fetch", "restore_version"),

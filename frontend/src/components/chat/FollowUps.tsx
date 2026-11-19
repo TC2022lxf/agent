@@ -4,7 +4,7 @@
  * Deliberately not `AnswerOptions`: those answer a question the Agent asked, and clicking one
  * continues the same task. These are new requests the user did not have to type. They are a
  * different colour and carry a different label so nobody confuses a suggestion with an
- * obligation to reply (docs/06, decisions/0042).
+ * obligation to reply (docs/architecture/system.md, docs/architecture/agent-runtime.md).
  */
 export function FollowUps({ questions, onPick, disabled }: {
   questions: string[]

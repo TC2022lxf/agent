@@ -1,4 +1,4 @@
-"""ask_question: what the next Run is told about the question it answered (decisions/0043).
+"""ask_question: what the next Run is told about the question it answered (docs/architecture/system.md).
 
 A Run is not suspended and there is no `tool_result` channel: answering starts a NEW Run. That
 is a defensible choice, but it means the question has to travel through the recorded history,

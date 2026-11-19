@@ -1,4 +1,4 @@
-"""Recharge orders and the Run budget policy (docs/11 sections 3 and 4).
+"""Recharge orders and the Run budget policy (docs/architecture/data-and-contracts.md sections 3 and 4).
 
 Two things live here that look similar but are not:
 
@@ -86,7 +86,7 @@ class BillingService:
             return 1.0
 
     def points_from_micro_cny(self, cost_micro_cny: int) -> int:
-        """docs/11: points = ceil(cost_micro_cny * multiplier / 10000)."""
+        """docs/architecture/data-and-contracts.md: points = ceil(cost_micro_cny * multiplier / 10000)."""
         if cost_micro_cny <= 0:
             return 0
         import math

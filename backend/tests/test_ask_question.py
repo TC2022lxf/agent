@@ -1,4 +1,4 @@
-"""Structured questions via ask_question (decisions/0037)."""
+"""Structured questions via ask_question (docs/architecture/agent-runtime.md)."""
 
 from __future__ import annotations
 

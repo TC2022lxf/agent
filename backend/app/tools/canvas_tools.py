@@ -1,4 +1,4 @@
-"""Canvas tools (decisions/0025, 0029). One writer, one reader, one variant maker.
+"""Canvas tools (docs/architecture/data-and-contracts.md, 0029). One writer, one reader, one variant maker.
 
 `compose_canvas` writes the whole board in one Version: the planner sees the board, decides
 what changes, and sends the new board. Pictures are never drawn here; an image module points

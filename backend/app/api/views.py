@@ -117,7 +117,7 @@ def constraint_view(c: Constraint) -> dict[str, Any]:
 
 
 def canvas_view(uow: UnitOfWork, task: Task) -> dict[str, Any]:
-    """The board plus every image module's picture and Version (docs/07, decisions/0025, 0027).
+    """The board plus every image module's picture and Version (docs/architecture/agent-runtime.md, docs/architecture/data-and-contracts.md, 0027).
 
     URLs come from the canvas Version's manifest, not from the slot's current pointer: a
     newly generated picture is not on a page until a version points at it. `bounds` is the

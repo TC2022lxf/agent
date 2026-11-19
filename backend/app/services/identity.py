@@ -1,4 +1,4 @@
-"""Identity: accounts, invite codes, sessions, roles (docs/11 section 2).
+"""Identity: accounts, invite codes, sessions, roles (docs/architecture/data-and-contracts.md section 2).
 
 Two credentials, on purpose:
 

@@ -112,7 +112,7 @@ def _commit_canvas(
     """The canvas decides image module pointers, so it commits through its own path.
 
     A rejected page must not move any pointer: the check runs before activation
-    (decisions/0025). Everything else matches `commit_output`.
+    (docs/architecture/data-and-contracts.md). Everything else matches `commit_output`.
     """
     subject = EvalSubject(slot_registry.CANVAS_SLOT, content, task_meta, rules, store)
     hard_fail = False

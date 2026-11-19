@@ -1,4 +1,4 @@
-"""Ports (docs/07). Tools, engines and runtime depend on these, never on vendors."""
+"""Ports (docs/architecture/agent-runtime.md). Tools, engines and runtime depend on these, never on vendors."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ class ImageResult:
 
 
 class ModelGatewayPort(Protocol):
-    """All model calls go through here (docs/11). Aliases, not vendor model names."""
+    """All model calls go through here (docs/architecture/data-and-contracts.md). Aliases, not vendor model names."""
 
     def chat_json(
         self, alias: str, system: str, user: str, *,

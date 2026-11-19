@@ -17,7 +17,7 @@ function Item({ active, later, icon, onClick, children }: {
   )
 }
 
-/** Prototype sidebar: explicit entries per agent (decisions/0010), recent sessions, footer. */
+/** Prototype sidebar: explicit entries per agent (docs/architecture/system.md), recent sessions, footer. */
 export function Sidebar() {
   const api = useApi()
   const toast = useToast()

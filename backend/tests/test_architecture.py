@@ -1,4 +1,4 @@
-"""Layering and registration rules enforced as tests (docs/11 CI checks, AGENTS.md)."""
+"""Layering and registration rules enforced as tests (docs/architecture/data-and-contracts.md CI checks, AGENTS.md)."""
 
 from __future__ import annotations
 

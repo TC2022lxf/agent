@@ -1,4 +1,4 @@
-"""Starter boards for the canvas home (decisions/0034).
+"""Starter boards for the canvas home (docs/architecture/system.md).
 
 A template is a board that already has some finished pictures, each with the prompt that
 would reproduce it, and a `ref` where one picture was made from another. The pictures

@@ -1,4 +1,4 @@
-﻿import { useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import type { CanvasView as CanvasData } from '../api/types'
 import { CanvasWorkbench } from '../components/canvas/CanvasWorkbench'
@@ -13,7 +13,7 @@ import { useRunTracker } from '../state/useRunTracker'
 import { useRefreshTask, useTaskData } from '../state/useTaskData'
 
 /**
- * Canvas Agent workspace (decisions/0029, 0031), the stage you enter after picking a project.
+ * Canvas Agent workspace (docs/architecture/data-and-contracts.md, 0031), the stage you enter after picking a project.
  * Modelled on stitch_demo/workspace.html, coloured with the app theme: the board fills the
  * stage, a glass top bar floats over it, the prompt sits in a dock at the bottom, and the
  * conversation is a glass card at the top left. The inspector stays on the right, so the two
@@ -208,7 +208,7 @@ function Composer({
         <div className="composer-tools-left" />
         {running ? (
           // One primary action, and the label says what it does: while the board is being
-          // built the same button stops the Run instead of greying out (docs/06).
+          // built the same button stops the Run instead of greying out (docs/architecture/system.md).
           <button type="button" className="composer-send is-stop" aria-label="停止生成" onClick={onStop}>停止</button>
         ) : (
           <button type="button" className="composer-send" aria-label="发送" disabled={!text.trim()} onClick={onSend}>发送</button>

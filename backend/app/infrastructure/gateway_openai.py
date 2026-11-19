@@ -1,4 +1,4 @@
-"""OpenAI-protocol adapter (decisions/0008, 0022). Never imported by Tool or Runtime code.
+"""OpenAI-protocol adapter (docs/architecture/agent-runtime.md, 0022). Never imported by Tool or Runtime code.
 
 Text models use `POST /chat/completions` with a JSON object response format.
 
@@ -10,7 +10,7 @@ Images are different per vendor, so this adapter probes two shapes:
    gateways, and the only shape they accept.
 
 The shape is decided by the model profile's `capabilities`, not by guessing at runtime:
-`image.chat` marks the chat-shaped image models. See decisions/0022.
+`image.chat` marks the chat-shaped image models. See docs/architecture/agent-runtime.md.
 """
 
 from __future__ import annotations
@@ -207,7 +207,7 @@ class OpenAIGateway:
         model = self._model("image_generate")
         if "image.chat" in self._image_caps():
             # Native Gemini endpoint: `imageConfig.aspectRatio` is honoured here, unlike the
-            # OpenAI-compatible chat route (decision 0023).
+            # OpenAI-compatible chat route (docs/architecture/agent-runtime.md).
             png, actual = self._gemini_image(model, prompt, reference_png, aspect_ratio)
             return ImageResult(
                 png=png, model=model,
@@ -268,7 +268,7 @@ class OpenAIGateway:
         """Native Gemini `generateContent`. The only route where aspect ratio is obeyed.
 
         The OpenAI-compatible chat route on the same gateway ignores `imageConfig` and always
-        returns 1408x768 (decision 0023).
+        returns 1408x768 (docs/architecture/agent-runtime.md).
         """
         parts: list[dict[str, Any]] = [{"text": prompt}]
         if base_png is not None:

@@ -5,6 +5,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from app.constraints import load_pack
 from app.tools.base import Tool, ToolContext, ToolError, ToolMeta
 
 _SYSTEM = (
@@ -53,14 +54,72 @@ class EditListingTool(Tool):
         i = EditListingInput.model_validate(input)
         payload: dict[str, Any] = i.model_dump()
         payload["preferences_md"] = ctx.preferences_md
-        res = ctx.gateway.chat_json(
-            "listing_edit", _SYSTEM, json.dumps(payload, ensure_ascii=False)
-        )
-        content = res.data.get("content")
-        if not isinstance(content, dict):
-            raise ToolError("bad_model_output", "missing content")
+        required_bullets = load_pack()["bullets"]["count"] if i.slot == "bullets" else None
+        if required_bullets is not None:
+            payload["required_bullets"] = required_bullets
+        for attempt in range(2):
+            res = ctx.gateway.chat_json(
+                "listing_edit", _SYSTEM, json.dumps(payload, ensure_ascii=False)
+            )
+            content = _content_from_response(i.slot, res.data)
+            content = _validated_content(i.slot, content)
+            if required_bullets is None or len(content["items"]) == required_bullets:
+                break
+            payload["repair"] = {
+                "reason": "wrong_bullet_count",
+                "expected": required_bullets,
+                "previous_output": content,
+            }
+        if required_bullets is not None and len(content["items"]) != required_bullets:
+            raise ToolError(
+                "bad_model_output", f"bullets must contain exactly {required_bullets} items"
+            )
         return EditListingOutput(
             slot=i.slot,
             content=content,
             params={"instruction": i.instruction, "base_version_id": i.base_version_id},
         )
+
+
+def _validated_content(slot: str, content: dict[str, Any]) -> dict[str, Any]:
+    """Reject empty model output before it can become a Version.
+
+    A syntactically valid `{"text": ""}` used to be committed as a successful first draft.
+    The model response is data, not proof that useful copy was produced.
+    """
+    if slot == "bullets":
+        items = content.get("items")
+        if not isinstance(items, list) or not items:
+            raise ToolError("bad_model_output", "bullets must be a non-empty list")
+        if any(not isinstance(item, str) or not item.strip() for item in items):
+            raise ToolError("bad_model_output", "every bullet must be non-empty text")
+        return content
+    if slot in {"title", "description", "search_terms"}:
+        text = content.get("text")
+        if not isinstance(text, str) or not text.strip():
+            raise ToolError("bad_model_output", f"{slot} must be non-empty text")
+        return content
+    raise ToolError("invalid_slot", f"unsupported listing slot: {slot}")
+
+def _content_from_response(slot: str, data: dict[str, Any]) -> dict[str, Any]:
+    """Accept both the requested wrapper and a bare slot body.
+
+    Real OpenAI-compatible models sometimes return ``{"items": [...]}`` or
+    ``{"text": "..."}`` directly, despite the prompt requesting ``{"content": ...}``.
+    The bare shape is unambiguous once the slot is known, so normalize it here.
+    """
+    wrapped = data.get("content")
+    body = wrapped if isinstance(wrapped, dict) else data
+    if slot == "bullets" and isinstance(body.get("items"), list):
+        return {"items": body["items"]}
+    if slot in {"title", "description"} and isinstance(body.get("text"), str):
+        return {"text": body["text"]}
+    if slot == "search_terms":
+        if isinstance(body.get("text"), str):
+            return {"text": body["text"]}
+        items = body.get("items")
+        if isinstance(items, list) and items and all(
+            isinstance(item, str) and item.strip() for item in items
+        ):
+            return {"text": " ".join(item.strip() for item in items)}
+    raise ToolError("bad_model_output", "missing content")

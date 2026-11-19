@@ -1,4 +1,4 @@
-"""Conversation timeline of a Task, rebuilt from Runs (docs/07). The chat shows what the
+"""Conversation timeline of a Task, rebuilt from Runs (docs/architecture/agent-runtime.md). The chat shows what the
 Runtime recorded: nothing here is stored separately, so it cannot drift from the facts."""
 
 from __future__ import annotations
@@ -91,7 +91,7 @@ def _turn(
         dict(e.data) for e in events if e.type == "human_input_request"
     ]
     # Follow-up chips are a UI hint about a finished turn, not an answer and not a Tool call
-    # (decisions/0042). One turn has one set: they are written after the last answer.
+    # (docs/architecture/agent-runtime.md). One turn has one set: they are written after the last answer.
     follow_ups: list[str] = []
     for e in events:
         if e.type == "followups":

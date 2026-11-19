@@ -1,4 +1,4 @@
-"""Platform constraint packs (docs/09). Numbers live in JSON, not in code."""
+"""Platform constraint packs (docs/architecture/data-and-contracts.md). Numbers live in JSON, not in code."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ def load_pack(pack_id: str = "amazon_com") -> dict[str, Any]:
 
 
 def platform_constraints(pack_id: str = "amazon_com") -> dict[str, Any]:
-    """Read-only list shown to the user. Users cannot rewrite these (docs/09).
+    """Read-only list shown to the user. Users cannot rewrite these (docs/architecture/data-and-contracts.md).
     `value` is the number a UI may use for counters ("169 / 200")."""
     p = load_pack(pack_id)
     mi = p["main_image"]

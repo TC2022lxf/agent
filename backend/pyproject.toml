@@ -34,7 +34,8 @@ app = ["constraints/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-# Live tests call a paid vendor; `-m live` overrides the default selection in addopts.
+# Live tests call a paid vendor. Always use `pytest -m "not live"` for offline runs.
+# Registering markers does not configure a default exclusion.
 markers = ["live: calls the real model vendor", "serial: must not run in parallel"]
 
 [tool.ruff]

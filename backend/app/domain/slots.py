@@ -1,4 +1,4 @@
-﻿"""Slot registry (docs/09). Slots are read from here, never hard-coded elsewhere.
+"""Slot registry (docs/architecture/data-and-contracts.md). Slots are read from here, never hard-coded elsewhere.
 
 File tasks have no fixed slots. `write_file` creates one artifact per file name.
 """
@@ -42,7 +42,7 @@ _SLOTS: dict[str, SlotDef] = {
 }
 
 # Image modules of a canvas are separate image artifacts, named canvas_image_1, canvas_image_2…
-# The numbered key is created on first write, like a file name (decisions/0029).
+# The numbered key is created on first write, like a file name (docs/architecture/data-and-contracts.md).
 CANVAS_SLOT = "canvas"
 CANVAS_MODULE_PREFIX = "canvas_image_"
 _CANVAS_MODULE = re.compile(r"^canvas_image_([1-9][0-9]?)$")
@@ -60,7 +60,7 @@ _TASK_KIND_SLOTS: dict[str, tuple[str, ...]] = {
 }
 
 # A general Task is the one place several artifact kinds live together: the same
-# conversation can hold written PDP slots, a picture, and a file (decisions/0019, 0020).
+# conversation can hold written PDP slots, a picture, and a file (docs/architecture/data-and-contracts.md, 0020).
 # A canvas Task holds its canvas, the canvas' image modules, and the exported file (0025).
 _MULTI_ARTIFACT_KINDS = frozenset({"general", "canvas"})
 
@@ -106,7 +106,7 @@ def is_canvas_slot(key: str) -> bool:
 
 
 def is_image_slot(key: str) -> bool:
-    """Anything whose Version content is `object_key` + width + height (docs/09)."""
+    """Anything whose Version content is `object_key` + width + height (docs/architecture/data-and-contracts.md)."""
     return key in IMAGE_SLOT_KEYS or canvas_module_index(key) is not None
 
 
@@ -127,12 +127,12 @@ def slots_for_task_kind(kind: str) -> tuple[str, ...]:
 
 
 def open_slots_for_task_kind(kind: str) -> tuple[str, ...]:
-    """The slots of this kind a Task starts with: a closed type gets no Artifact (docs/09)."""
+    """The slots of this kind a Task starts with: a closed type gets no Artifact (docs/architecture/data-and-contracts.md)."""
     return tuple(s for s in _TASK_KIND_SLOTS[kind] if is_open(s))
 
 
 def is_open(slot: str) -> bool:
-    """A registered slot may be closed: `docs/09` says a closed type cannot get an Artifact."""
+    """A registered slot may be closed: `docs/architecture/data-and-contracts.md` says a closed type cannot get an Artifact."""
     d = _SLOTS.get(slot)
     if d is None:
         return True  # a canvas module instance or a file name: not a registered slot
@@ -168,7 +168,7 @@ def allows_slot(kind: str, slot: str) -> bool:
 
     A general Task is the flexible one: it may write any PDP slot, the standalone image, the
     canvas, a canvas module's picture, or a file name. the `pdp` and `canvas` artifacts appear
-    the first time one of their slots is written (decisions/0020, 0025). A canvas Task may
+    the first time one of their slots is written (docs/architecture/data-and-contracts.md, 0025). A canvas Task may
     write its canvas, the canvas' image modules, the standalone image and a file name (the
     exported HTML).
     """

@@ -65,7 +65,7 @@ def build_container(
             return row.upstream_model if row is not None else alias
 
     def image_capabilities() -> set[str]:
-        """Whether the bound image model answers in chat or via `/images/*` (decision 0022)."""
+        """Whether the bound image model answers in chat or via `/images/*` (docs/architecture/agent-runtime.md)."""
         with uow_factory() as uow:
             image = uow.profiles.image_profile()
         return set(image.capabilities or []) if image is not None else set()

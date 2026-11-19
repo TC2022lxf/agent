@@ -1,4 +1,4 @@
-"""The planner payload must name the slots it is allowed to write (docs/04, 07).
+"""The planner payload must name the slots it is allowed to write (docs/architecture/agent-runtime.md, 07).
 
 Before this, `slot` was something the model had to guess from the Skill name. These tests
 pin the list down for each Task kind, including the general one that spans three shapes.

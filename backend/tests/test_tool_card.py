@@ -1,4 +1,4 @@
-"""The Tool execution card exists while the Tool runs (docs/06).
+"""The Tool execution card exists while the Tool runs (docs/architecture/system.md).
 
 A Tool's durable record is written only after it returns, so a 180s image had no presence in
 the chat until it was already over: the thread showed one frozen sentence, and a working call

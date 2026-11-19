@@ -1,4 +1,4 @@
-"""Tool call wrapper (docs/04, 07): allow-list, validate, budget, timeout, validate output,
+"""Tool call wrapper (docs/architecture/agent-runtime.md, 07): allow-list, validate, budget, timeout, validate output,
 and produce the record the executor persists. Tools themselves stay free of all this."""
 
 from __future__ import annotations

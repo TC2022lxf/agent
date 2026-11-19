@@ -5,7 +5,7 @@ database, so the server talks to the same services the HTTP API uses instead of 
 calls into a page. That means an external write obeys the same rules as a drag in our UI — a
 new Version, never an overwrite, and the write boundary still checked.
 
-Scope is deliberately narrow (decisions/0030): read the board, read every picture and prompt,
+Scope is deliberately narrow (docs/architecture/system.md): read the board, read every picture and prompt,
 apply ops, compose a whole board. No generation, no plugins, no site navigation.
 
 Run it with:

@@ -83,7 +83,7 @@ def test_timeline_rebuilds_the_conversation_from_runs(api: Api) -> None:
     }
     assert any(v["kind"] == "pdp" for v in first["versions"])
     kinds = {i["kind"] for i in second["interpretations"]}
-    # One sentence is one Feedback now (decisions/0044). The rule is recorded by a tool, so the
+    # One sentence is one Feedback now (docs/architecture/agent-runtime.md). The rule is recorded by a tool, so the
     # turn reads as a rule turn; the edit it also asked for is visible as a new version.
     assert kinds == {"new_constraint"}
     pending = next(i for i in second["interpretations"] if i["kind"] == "new_constraint")

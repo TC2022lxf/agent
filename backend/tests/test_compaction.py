@@ -1,4 +1,4 @@
-"""Context compaction (docs/07, decision 0025).
+"""Context compaction (docs/architecture/agent-runtime.md, docs/architecture/data-and-contracts.md).
 
 What is pinned here is the contract that was broken before:
 

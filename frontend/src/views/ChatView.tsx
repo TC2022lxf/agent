@@ -22,7 +22,7 @@ const imageSlotOf = (arts: { kind: string; slot: string | null; current_version_
 const fileSlotOf = (arts: { kind: string; slot: string | null; current_version_id: string | null }[]) =>
   arts.find((a) => a.kind === 'file' && a.current_version_id && a.slot)?.slot ?? 'page.html'
 
-/** Chat + artifact drawer. The same view serves the general agent and the PDP agent (decisions/0010). */
+/** Chat + artifact drawer. The same view serves the general agent and the PDP agent (docs/architecture/system.md). */
 export function ChatView() {
   const api = useApi()
   const qc = useQueryClient()

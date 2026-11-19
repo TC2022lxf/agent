@@ -1,4 +1,4 @@
-﻿"""Canvas: a `canvas` Artifact that is a BOARD of screens (decisions/0025, 0029).
+"""Canvas: a `canvas` Artifact that is a BOARD of screens (docs/architecture/data-and-contracts.md, 0029).
 
 Modelled on Stitch: several screens on one surface, variants side by side, a theme made of
 tokens, and edges describing a clickable flow. Two things these tests protect. A user's drag
@@ -292,7 +292,7 @@ def test_bounds_cover_every_screen() -> None:
 
 
 def test_a_closed_slot_cannot_receive_an_artifact() -> None:
-    """docs/09: a registered but closed type cannot get an Artifact. `enabled` must mean that."""
+    """docs/architecture/data-and-contracts.md: a registered but closed type cannot get an Artifact. `enabled` must mean that."""
     from dataclasses import replace
 
     from app.domain import slots as registry

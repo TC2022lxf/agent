@@ -1,4 +1,4 @@
-"""Public web search and page fetch for the general agent (decisions/0035).
+"""Public web search and page fetch for the general agent (docs/architecture/agent-runtime.md).
 
 Both calls go through the gateway, which holds the vendor key. Neither writes a Version:
 the model reads the result and then answers, or writes an artifact with another tool.

@@ -20,7 +20,7 @@ import { keys, useTaskData } from '../state/useTaskData'
 
 /**
  * Image Agent page (prototype image-design.html): agent column + canvas. Every circled region
- * becomes one utterance with target_slot, target_region and target_version_id (docs/06).
+ * becomes one utterance with target_slot, target_region and target_version_id (docs/architecture/system.md).
  * The page renders server state only; the new Version appears when the Run finishes.
  */
 export function ImageStudioView() {
@@ -140,7 +140,7 @@ export function ImageStudioView() {
    * Sends one of the offered replies, tagged with the question it answers.
    *
    * A Run is not resumed: answering starts a new one. Without the `request_id` the next Run
-   * saw "一个电动剃须刀" as a fresh brief with no question attached (decisions/0043).
+   * saw "一个电动剃须刀" as a fresh brief with no question attached (docs/architecture/system.md).
    */
   const sendPick = (t: string) => {
     if (!t || busy) return
@@ -237,7 +237,7 @@ export function ImageStudioView() {
                     {/* While the Run is live this shows the reply as it streams, then the stage
                         line. The delivery bar and any answer already recorded are NOT gated on
                         `pending`: a committed Version plus a blank panel is what read as a hung
-                        job after the picture had in fact been made (docs/06). */}
+                        job after the picture had in fact been made (docs/architecture/system.md). */}
                     {pending && t === turns.at(-1) && <Working events={tracker.running ? tracker.events : []} />}
                     {t.status === 'failed' && <p className="assistant-lede">失败：{t.error}</p>}
                     {t.interpretations
@@ -332,7 +332,7 @@ export function ImageStudioView() {
                 {busy ? (
                   // While a Run is live the same button becomes Stop: one primary action, and
                   // the label says what is happening. A greyed-out Send left the user waiting
-                  // with no way to cancel and no sign the click had registered (docs/06).
+                  // with no way to cancel and no sign the click had registered (docs/architecture/system.md).
                   <button type="button" className="composer-send is-stop" aria-label="停止生成" onClick={() => void tracker.cancel()}>
                     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor" stroke="none" /></svg>
                   </button>

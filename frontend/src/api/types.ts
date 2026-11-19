@@ -1,4 +1,4 @@
-// Shapes of docs/07 responses used by the UI. Slots come from the server (/api/slots).
+// Shapes of docs/architecture/agent-runtime.md responses used by the UI. Slots come from the server (/api/slots).
 
 export type SlotKey = string
 export type NormRect = { x: number; y: number; w: number; h: number } // 0..1, relative to image
@@ -196,7 +196,7 @@ export interface RunView {
   overrun?: number
 }
 
-// ---- accounts, session, money (docs/11) ------------------------------------
+// ---- accounts, session, money (docs/architecture/data-and-contracts.md) ------------------------------------
 export interface SessionUser {
   id: string
   display_name: string
