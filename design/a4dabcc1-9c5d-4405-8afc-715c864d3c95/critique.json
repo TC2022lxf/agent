@@ -1,0 +1,11 @@
+{
+  "kind": "critique-panel",
+  "score": 4,
+  "axes": {
+    "clarity": { "score": 4, "notes": "Skills 双 Tab（SKILL.md / Scripts）与集市预览弹窗对齐 Claude 范式" },
+    "hierarchy": { "score": 4, "notes": "元信息条 + 编辑/预览分栏，集市卡片标签层次清晰" },
+    "typography": { "score": 4, "notes": "OpenAI 无衬线 + 等宽脚本区，留白充足" },
+    "motion": { "score": 4, "notes": "集市 Modal 沿用现有过渡" },
+    "brand": { "score": 4, "notes": "token 未外泄 hex，青绿仅主按钮" }
+  }
+}

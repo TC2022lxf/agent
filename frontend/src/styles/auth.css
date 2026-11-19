@@ -1,0 +1,242 @@
+/* Sign-in, account and admin screens (docs/06, 11, 13). */
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background: var(--bg, #f7f7f8);
+}
+
+.auth-card {
+  width: min(440px, 100%);
+  background: #fff;
+  border: 1px solid var(--line, #e6e6e8);
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.06);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  margin-bottom: 22px;
+}
+
+.auth-card h1 {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.auth-lede {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted, #6b6b73);
+  margin: 0 0 20px;
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+}
+
+.auth-form input {
+  width: 100%;
+}
+
+.auth-submit {
+  width: 100%;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.auth-error {
+  font-size: 13px;
+  color: #b42318;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 0;
+}
+
+.auth-switch {
+  display: block;
+  margin: 18px auto 0;
+  background: none;
+  border: 0;
+  color: var(--link, #0b6b5f);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.auth-dev {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line, #e6e6e8);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted, #6b6b73);
+}
+
+.auth-dev code {
+  font-family: var(--mono, ui-monospace, monospace);
+  background: #f2f2f4;
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+
+.auth-key {
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 13px;
+  word-break: break-all;
+  background: #f2f2f4;
+  border: 1px solid var(--line, #e6e6e8);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 0 0 16px;
+  user-select: all;
+}
+
+.auth-row {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--muted, #6b6b73);
+}
+
+/* ---- account ---- */
+.acct-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+.acct-balance {
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;
+  padding: 20px 22px;
+  border: 1px solid var(--line, #e6e6e8);
+  border-radius: 12px;
+  background: #fff;
+  margin-bottom: 16px;
+}
+
+.acct-balance-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted, #6b6b73);
+  margin-bottom: 4px;
+}
+
+.acct-balance strong {
+  font-size: 30px;
+  font-weight: 650;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.acct-balance-side span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted, #6b6b73);
+  margin-bottom: 2px;
+}
+
+.acct-balance-side strong {
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.topup-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.console-log td.is-plus { color: #067647; font-variant-numeric: tabular-nums; }
+.console-log td.is-minus { color: #b42318; font-variant-numeric: tabular-nums; }
+
+/* ---- admin ---- */
+.admin-credit-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.admin-issued {
+  font-size: 12px;
+  margin: 6px 0 0;
+}
+
+.admin-issued code {
+  font-family: var(--mono, ui-monospace, monospace);
+  background: #ecfdf3;
+  border: 1px solid #abefc6;
+  border-radius: 4px;
+  padding: 2px 6px;
+  word-break: break-all;
+}
+
+.admin-invite-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admin-invite-form label {
+  font-size: 13px;
+  color: var(--muted, #6b6b73);
+}
+
+/* ---- sidebar footer ---- */
+.sidebar-account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted, #6b6b73);
+}
+
+.sidebar-account-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-logout {
+  background: none;
+  border: 0;
+  color: var(--muted, #6b6b73);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+
+.sidebar-logout:hover { color: #b42318; }

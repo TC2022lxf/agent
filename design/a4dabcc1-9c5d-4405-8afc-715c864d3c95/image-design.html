@@ -1,0 +1,935 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1440" />
+  <title>AI 图片设计 · Design-View 轻画布</title>
+  <style>
+:root {
+  --bg: #ffffff;
+  --surface: #f5f5f5;
+  --surface-warm: #fafafa;
+  --fg: #0d0d0d;
+  --fg-2: #1a1a1a;
+  --muted: #6e6e6e;
+  --meta: #9b9b9b;
+  --border: #e5e5e5;
+  --border-soft: #ededed;
+  --accent: #10a37f;
+  --accent-on: #ffffff;
+  --accent-hover: #0a7a5e;
+  --font-display: "Signifier", "Source Serif Pro", Georgia, serif;
+  --font-body: "Söhne", "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --sidebar-w: 240px;
+  --agent-col-w: 400px;
+  --mark-blue: #2563eb;
+  --mark-blue-soft: color-mix(in oklab, var(--mark-blue) 14%, transparent);
+  --canvas-bg: #ececec;
+  --canvas-dot: color-mix(in oklab, var(--border) 55%, transparent);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { font-family: var(--font-body); font-size: 14px; color: var(--fg); background: var(--bg); overflow: hidden; }
+.app { max-width: 1440px; margin: 0 auto; height: 100vh; display: flex; flex-direction: row; border-inline: 1px solid var(--border); }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+.sidebar-brand { display: flex; align-items: center; padding: 14px 12px 10px; flex-shrink: 0; }
+.sidebar-brand-link {
+  display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--fg);
+  font-size: 15px; font-weight: 600; padding: 6px 8px; border-radius: var(--radius-sm);
+}
+.sidebar-brand-link:hover { background: var(--bg); }
+.brand-mark {
+  width: 28px; height: 28px; border-radius: 8px; background: var(--fg); color: var(--accent-on);
+  display: grid; place-items: center; font-size: 11px; font-weight: 700;
+}
+.sidebar-nav-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 0 8px; }
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0; border-right: 1px solid var(--border); background: var(--surface-warm);
+  display: flex; flex-direction: column; padding: 0 0 12px; overflow: hidden;
+}
+.nav-group { margin-bottom: 8px; }
+.nav-group-label {
+  padding: 8px 16px 6px; font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--meta);
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  width: calc(100% - 16px); margin: 0 8px 2px; padding: 9px 12px;
+  border: none; border-radius: var(--radius-sm); background: transparent; font: inherit; font-size: 13px;
+  font-weight: 500; color: var(--fg-2); cursor: pointer; text-align: left; text-decoration: none;
+}
+.nav-item:hover { background: var(--bg); color: var(--fg); }
+.nav-item.is-active { background: var(--bg); color: var(--fg); box-shadow: inset 0 0 0 1px var(--border-soft); }
+.nav-icon { width: 18px; height: 18px; flex-shrink: 0; color: var(--muted); }
+.nav-item.is-active .nav-icon { color: var(--fg); }
+
+.design-stage { flex: 1; min-width: 0; display: flex; min-height: 0; }
+
+.agent-column {
+  width: var(--agent-col-w); flex-shrink: 0; display: flex; flex-direction: column;
+  border-right: 1px solid var(--border); background: var(--bg); min-height: 0;
+}
+.agent-col-head {
+  flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 10px; border-bottom: 1px solid var(--border-soft);
+}
+.agent-model {
+  display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; border: none; background: transparent;
+  font-family: inherit; cursor: pointer; padding: 4px 6px; border-radius: 8px;
+}
+.agent-model:hover { background: var(--surface-warm); }
+.agent-model svg { width: 14px; height: 14px; color: var(--muted); }
+.agent-head-actions { display: flex; align-items: center; gap: 4px; }
+.icon-btn {
+  width: 34px; height: 34px; border: none; border-radius: 10px; background: transparent;
+  cursor: pointer; color: var(--muted); display: grid; place-items: center;
+}
+.icon-btn:hover { background: var(--surface-warm); color: var(--fg); }
+.icon-btn svg { width: 18px; height: 18px; }
+
+.agent-thread {
+  flex: 1; min-height: 0; overflow-y: auto; padding: 18px 16px 12px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.msg-user {
+  align-self: flex-start; max-width: 100%; padding: 12px 14px;
+  background: var(--surface); border: 1px solid var(--border-soft); border-radius: var(--radius-md);
+  font-size: 14px; line-height: 1.55; color: var(--fg-2);
+}
+.msg-assistant { display: flex; flex-direction: column; gap: 12px; }
+.agent-identity { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.agent-avatar {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--fg); color: var(--bg);
+  display: grid; place-items: center; font-size: 10px; font-weight: 600;
+}
+.assistant-lede { font-size: 14px; line-height: 1.6; color: var(--fg-2); margin: 0; }
+.chat-result-hero {
+  width: 100%; border-radius: var(--radius-md); overflow: hidden;
+  border: 1px solid var(--border-soft); aspect-ratio: 16 / 10;
+  background: linear-gradient(165deg, #e8e6e1 0%, #d4cfc4 28%, #a8b5a0 45%, #c9d4c5 62%, #ebe8e2 100%);
+  box-shadow: 0 4px 20px color-mix(in oklab, var(--fg) 6%, transparent);
+}
+.chat-thumb-row { display: flex; gap: 8px; margin-top: -4px; }
+.chat-thumb {
+  width: 56px; height: 56px; border-radius: 10px; border: 1px solid var(--border-soft);
+  background: linear-gradient(145deg, #e5e2dc, #c8c4bc); cursor: pointer;
+}
+.chat-thumb.is-active { box-shadow: 0 0 0 2px var(--fg); }
+.delivery-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius-sm); background: var(--surface-warm);
+  border: 1px solid var(--border-soft); font-size: 13px;
+}
+.delivery-bar .done { display: flex; align-items: center; gap: 8px; color: var(--fg-2); font-weight: 500; }
+.delivery-check {
+  width: 20px; height: 20px; border-radius: 50%; background: color-mix(in oklab, var(--accent) 20%, var(--bg));
+  color: var(--accent-hover); display: grid; place-items: center; font-size: 11px;
+}
+.delivery-steps { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+.thread-msg-dynamic { display: flex; flex-direction: column; gap: 8px; }
+.thread-msg-dynamic .msg-user { align-self: flex-end; background: var(--surface-warm); }
+
+.agent-composer {
+  flex-shrink: 0; padding: 12px 14px 16px; border-top: 1px solid var(--border-soft); position: relative;
+}
+.composer-pill {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 10px 12px 10px; border: 1px solid var(--border); border-radius: 22px;
+  background: var(--bg); box-shadow: 0 2px 12px color-mix(in oklab, var(--fg) 4%, transparent);
+}
+.composer-pill:focus-within { border-color: color-mix(in oklab, var(--fg) 25%, var(--border)); }
+.composer-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.file-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
+  border-radius: 9999px; background: var(--surface); font-size: 12px; color: var(--fg-2);
+  max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.file-chip::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+}
+.composer-pill textarea {
+  width: 100%; border: none; resize: none; font: inherit; font-size: 14px;
+  min-height: 22px; max-height: 72px; background: transparent; padding: 0 4px;
+}
+.composer-pill textarea:focus { outline: none; }
+.composer-toolbar {
+  display: flex; align-items: center; justify-content: space-between; padding: 0 2px;
+}
+.composer-tools-left { display: flex; align-items: center; gap: 2px; }
+.composer-send {
+  width: 36px; height: 36px; border: none; border-radius: 50%; background: var(--fg); color: var(--accent-on);
+  cursor: pointer; display: grid; place-items: center;
+}
+.composer-send:hover { background: var(--fg-2); }
+.composer-send svg { width: 18px; height: 18px; }
+.slash-menu {
+  position: absolute; left: 14px; bottom: 100%; margin-bottom: 6px; z-index: 40;
+  width: min(280px, calc(100% - 28px)); background: var(--bg);
+  border: 1px solid var(--border-soft); border-radius: var(--radius-md);
+  box-shadow: 0 12px 40px color-mix(in oklab, var(--fg) 12%, transparent);
+  display: none; max-height: 200px; overflow-y: auto;
+}
+.slash-menu.is-open { display: block; }
+.slash-item {
+  display: block; width: 100%; padding: 10px 14px; border: none; background: transparent;
+  text-align: left; font: inherit; font-size: 13px; cursor: pointer;
+}
+.slash-item:hover { background: var(--surface-warm); }
+.slash-item small { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.design-column {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; position: relative;
+  background: var(--canvas-bg);
+}
+.canvas-viewport {
+  flex: 1; min-height: 0; position: relative; overflow: hidden; cursor: grab;
+  background-color: var(--canvas-bg);
+  background-image: radial-gradient(circle, var(--canvas-dot) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+.canvas-viewport.is-panning { cursor: grabbing; }
+.canvas-viewport.is-mark { cursor: crosshair; }
+.canvas-world {
+  position: absolute; left: 0; top: 0; width: 5000px; height: 4000px;
+  transform-origin: 0 0;
+}
+.canvas-chrome-btn {
+  position: absolute; z-index: 28; width: 40px; height: 40px; border-radius: 12px;
+  border: 1px solid var(--border-soft); background: var(--bg); cursor: pointer;
+  display: grid; place-items: center; box-shadow: 0 4px 16px color-mix(in oklab, var(--fg) 8%, transparent);
+}
+.canvas-chrome-btn:hover { background: var(--surface-warm); }
+.canvas-menu { top: 14px; left: 14px; }
+.canvas-close { top: 14px; right: 14px; font-size: 20px; line-height: 1; color: var(--muted); }
+.canvas-save {
+  top: 14px; right: 62px; width: auto; padding: 0 12px; font-size: 12px; font-weight: 500; color: var(--fg-2);
+}
+
+.img-node {
+  position: absolute; z-index: 2; touch-action: none;
+  border: 2px solid transparent; border-radius: 6px;
+  box-shadow: 0 16px 48px color-mix(in oklab, var(--fg) 14%, transparent);
+  background: var(--bg);
+}
+.img-node.is-selected { border-color: var(--mark-blue); z-index: 5; }
+.img-node.is-selected::before,
+.img-node.is-selected::after {
+  content: ""; position: absolute; width: 10px; height: 10px; background: var(--bg);
+  border: 2px solid var(--mark-blue); border-radius: 50%; z-index: 8; pointer-events: none;
+}
+.img-node.is-selected::before { top: -6px; left: -6px; }
+.img-node.is-selected::after { top: -6px; right: -6px; }
+.corner-handle.bl, .corner-handle.br {
+  position: absolute; width: 10px; height: 10px; background: var(--bg);
+  border: 2px solid var(--mark-blue); border-radius: 50%; z-index: 8; pointer-events: none;
+}
+.corner-handle.bl { bottom: -6px; left: -6px; }
+.corner-handle.br { bottom: -6px; right: -6px; }
+.img-node-inner { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 4px; }
+.img-node-visual { width: 100%; height: 100%; display: block; pointer-events: none; }
+.img-node-visual.is-main {
+  background: linear-gradient(165deg, #f0ede8 0%, #d8d2c8 22%, #8fa888 42%, #b8c9b0 55%, #e8e4de 78%, #d4cfc4 100%);
+}
+.img-node-visual.is-lamp {
+  background: radial-gradient(circle at 50% 30%, #f5f0e6 0%, transparent 55%),
+    linear-gradient(180deg, #c4a574 0%, #8b7355 35%, #2a2a2a 70%, #1a1a1a 100%);
+}
+.img-node-meta {
+  position: absolute; top: -26px; left: 0; right: 0; display: flex; justify-content: space-between;
+  align-items: baseline; pointer-events: none; font-size: 11px; color: var(--muted);
+}
+.img-node-meta .fname { max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.img-node-meta .dims { font-family: var(--font-mono); font-size: 10px; color: var(--meta); }
+.resize-handle.se {
+  position: absolute; right: -6px; bottom: -6px; width: 10px; height: 10px;
+  background: var(--bg); border: 2px solid var(--mark-blue); border-radius: 50%; z-index: 9; cursor: nwse-resize;
+}
+.mark-layer { position: absolute; inset: 0; pointer-events: none; }
+.mark-rect {
+  position: absolute; border: 2px solid var(--mark-blue); background: var(--mark-blue-soft);
+  border-radius: 3px; pointer-events: auto; cursor: pointer;
+}
+.mark-rect .mark-dot {
+  position: absolute; width: 8px; height: 8px; background: var(--mark-blue); border: 2px solid var(--bg);
+  border-radius: 50%;
+}
+.mark-rect .mark-dot.tl { top: -5px; left: -5px; }
+.mark-rect .mark-dot.tr { top: -5px; right: -5px; }
+.mark-rect .mark-dot.bl { bottom: -5px; left: -5px; }
+.mark-rect .mark-dot.br { bottom: -5px; right: -5px; }
+
+.node-toolbar {
+  position: absolute; z-index: 30; display: none;
+  align-items: center; gap: 0; padding: 5px 6px;
+  background: var(--bg); border: 1px solid var(--border-soft); border-radius: 9999px;
+  box-shadow: 0 10px 32px color-mix(in oklab, var(--fg) 12%, transparent);
+  transform: translateX(-50%); white-space: nowrap;
+}
+.node-toolbar.is-visible { display: flex; }
+.node-toolbar button {
+  padding: 7px 14px; border: none; border-radius: 9999px; background: transparent;
+  font: inherit; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--fg-2);
+}
+.node-toolbar button:hover { background: var(--surface-warm); }
+.node-toolbar button.is-active { background: var(--surface); color: var(--mark-blue); }
+.node-toolbar .tb-icon {
+  width: 36px; height: 36px; padding: 0; display: grid; place-items: center;
+}
+
+.v-toolbar {
+  position: absolute; right: 18px; top: 50%; transform: translateY(-50%); z-index: 24;
+  display: flex; flex-direction: column; gap: 4px; padding: 6px;
+  background: var(--bg); border: 1px solid var(--border-soft); border-radius: 14px;
+  box-shadow: 0 6px 24px color-mix(in oklab, var(--fg) 8%, transparent);
+}
+.v-tool {
+  width: 44px; height: 44px; border: none; border-radius: 12px; background: transparent;
+  cursor: pointer; color: var(--muted); display: grid; place-items: center;
+}
+.v-tool:hover { background: var(--surface-warm); color: var(--fg); }
+.v-tool.is-active { background: color-mix(in oklab, var(--mark-blue) 10%, var(--bg)); color: var(--mark-blue); }
+.v-tool svg { width: 20px; height: 20px; }
+
+.canvas-zoom {
+  position: absolute; left: 16px; bottom: 16px; z-index: 22;
+  display: flex; align-items: center; gap: 2px; padding: 4px 6px;
+  background: var(--bg); border: 1px solid var(--border-soft); border-radius: 9999px;
+  font-size: 12px; font-family: var(--font-mono); box-shadow: 0 4px 16px color-mix(in oklab, var(--fg) 6%, transparent);
+}
+.canvas-zoom button {
+  width: 30px; height: 30px; border: none; border-radius: 50%; background: transparent;
+  cursor: pointer; font-size: 16px; line-height: 1; color: var(--fg-2);
+}
+.canvas-zoom button:hover { background: var(--surface-warm); }
+
+.task-panel {
+  position: absolute; left: 16px; bottom: 64px; z-index: 23;
+  width: min(300px, calc(100% - 100px)); max-height: 200px;
+  background: var(--bg); border: 1px solid var(--border-soft); border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px color-mix(in oklab, var(--fg) 8%, transparent);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.task-panel.is-collapsed { max-height: none; width: auto; }
+.task-panel.is-collapsed .task-panel-body,
+.task-panel.is-collapsed .task-panel-foot { display: none; }
+.task-panel-head {
+  display: flex; align-items: center; justify-content: space-between; padding: 8px 12px;
+  border-bottom: 1px solid var(--border-soft); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.task-panel-body { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+.task-row {
+  padding: 8px 10px; border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
+  background: var(--surface-warm); font-size: 12px;
+}
+.task-row label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.task-row input {
+  width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font: inherit; font-size: 12px;
+}
+.task-row-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px; }
+.task-panel-foot { padding: 8px 12px; border-top: 1px solid var(--border-soft); }
+.task-empty { padding: 12px; text-align: center; font-size: 12px; color: var(--meta); }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 13px; font-weight: 500;
+  border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); cursor: pointer; font-family: inherit;
+}
+.btn-sm { padding: 6px 10px; font-size: 12px; }
+.btn-teal { background: var(--accent); color: var(--accent-on); border-color: var(--accent); }
+.btn-ghost { border-color: transparent; background: transparent; }
+.btn-ghost:hover { background: var(--surface-warm); }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  padding: 10px 18px; background: var(--fg); color: var(--accent-on); font-size: 13px;
+  border-radius: 9999px; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 50;
+}
+.toast.is-visible { opacity: 1; }
+.design-column.is-pulse .canvas-viewport { animation: canvas-pulse 0.55s ease; }
+@keyframes canvas-pulse {
+  50% { box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--accent) 35%, transparent); }
+}
+  </style>
+</head>
+<body>
+  <div class="app" data-od-id="image-design-app">
+    <nav class="sidebar" data-od-id="sidebar-nav" aria-label="主导航">
+      <div class="sidebar-brand" data-od-id="sidebar-brand">
+        <a class="sidebar-brand-link" href="workbench.html?view=home" data-od-id="nav-home-brand">
+          <span class="brand-mark" aria-hidden="true">AI</span>
+          <span>电商 AI</span>
+        </a>
+      </div>
+      <div class="sidebar-nav-scroll">
+        <div class="nav-group">
+          <div class="nav-group-label">通用</div>
+          <a class="nav-item" href="workbench.html?view=chat"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> 通用 Agent</a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-label">专用 Agent</div>
+          <a class="nav-item" href="workbench.html?view=chat&agent=pdp"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg> PDP Agent</a>
+          <a class="nav-item is-active" href="image-design.html" style="text-decoration:none"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg> 图片 Agent</a>
+          <a class="nav-item is-later" href="canvas-studio.html" style="text-decoration:none"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg> 画布 Agent<span class="x-later-tag">后期</span></a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-label">任务</div>
+          <a class="nav-item" href="workbench.html?view=history">任务列表</a>
+          <a class="nav-item" href="workbench.html?view=artifacts">任务成果</a>
+        </div>
+        <div class="nav-group">
+          <div class="nav-group-label">商品</div>
+          <a class="nav-item" href="workbench.html?view=products">商品与事实</a>
+        </div>
+      </div>
+      </nav>
+
+    <div class="design-stage" data-od-id="design-stage">
+      <section class="agent-column" data-od-id="agent-column" aria-label="Agent 对话">
+        <header class="agent-col-head" data-od-id="agent-col-head">
+          <div class="agent-model" style="cursor:default" id="agent-model" data-od-id="focus-label"><span id="focus-product">EchoByte 电动剃须刀</span></div>
+          <div class="agent-head-actions"><select id="img-source" style="font-size:11px;border:1px solid var(--border);border-radius:8px;padding:2px 6px;background:#fff" aria-label="图片来源"><option>EchoByte 主图</option><option>上传图片</option><option>NKTMXY 主图</option></select><span class="file-chip" style="max-width:none;font-family:var(--font-mono);font-size:11px">main_image</span></div>
+        </header>
+
+        <div class="agent-thread" id="agent-thread" data-od-id="agent-thread">
+          <div style="margin:8px 12px;padding:8px 10px;border:1px dashed var(--border);border-radius:10px;font-size:12px;color:var(--meta)"><b>图片 Agent</b>：可独立使用（选图或上传 → Mark 圈选 → 新版本），也会被通用 Agent 和 PDP Agent 调用。绑定 PDP 主图时，改动才会产生新的 PDP Version。</div>
+          <div class="msg-user" data-od-id="seed-user-msg">主体再大一点</div>
+          <div class="msg-assistant" data-od-id="seed-assistant-block">
+            <div class="agent-identity"><span class="agent-avatar" aria-hidden="true">AI</span><span>图片 Agent</span></div>
+            <p class="assistant-lede" id="seed-lede">只改了主图：<code>product_scale</code> 0.62 → 0.80，以 v1 为 base，其他参数不动。标题、五点、描述仍指向原版本。规则检查通过。</p>
+            <button type="button" class="chat-result-hero" id="chat-artifact-link" data-od-id="chat-artifact-card" aria-label="聚焦画布主图" style="background:#fff url(../../fixtures/echobyte-razor/images/main.jpg) center/contain no-repeat;aspect-ratio:1/1;max-width:220px"></button>
+            <div class="chat-thumb-row">
+              <span class="chat-thumb" aria-hidden="true" style="background:#fff url(../../fixtures/echobyte-razor/images/main.jpg) center/60% no-repeat" title="v1"></span>
+              <span class="chat-thumb is-active" aria-hidden="true" style="background:#fff url(../../fixtures/echobyte-razor/images/main.jpg) center/contain no-repeat" title="v2"></span>
+            </div>
+            <div class="delivery-bar" data-od-id="delivery-bar">
+              <span class="done"><span class="delivery-check">✓</span>主图 v2 已成为当前版本</span>
+              <span class="delivery-steps">edit_product_image · 18 积分</span>
+            </div>
+          </div>
+          <div id="thread-dynamic" data-od-id="thread-dynamic"></div>
+        </div>
+
+        <footer class="agent-composer" data-od-id="agent-composer">
+          <div class="slash-menu" id="slash-menu" data-od-id="slash-menu"></div>
+          <div class="composer-pill">
+            <div class="composer-chips">
+              <span class="file-chip" id="composer-file-chip">目标：主图 · v2（当前）</span>
+            </div>
+            <textarea id="agent-input" rows="1" placeholder="继续描述整张图或局部修改…" aria-label="Agent 输入"></textarea>
+            <div class="composer-toolbar">
+              <div class="composer-tools-left">
+                <button type="button" class="icon-btn" title="添加附件" aria-label="添加">+</button>
+                <button type="button" class="icon-btn" title="连接工具" aria-label="连接">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                </button>
+                <button type="button" class="icon-btn" title="语音" aria-label="语音">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
+                </button>
+              </div>
+              <button type="button" class="composer-send" id="agent-send" data-od-id="agent-send" aria-label="发送">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </footer>
+      </section>
+
+      <div class="design-column" id="design-column" data-od-id="design-column">
+        <div class="canvas-viewport" id="canvas-viewport" data-od-id="canvas-viewport">
+          <button type="button" class="canvas-chrome-btn canvas-menu" id="canvas-menu" aria-label="画布菜单">☰</button>
+          <button type="button" class="canvas-chrome-btn canvas-save btn-ghost" id="save-version" data-od-id="save-version">主图 v2 · 当前</button>
+          <button type="button" class="canvas-chrome-btn canvas-close" id="canvas-close" title="返回工作台" aria-label="关闭">×</button>
+
+          <div class="canvas-world" id="canvas-world" data-od-id="canvas-world">
+            <div class="img-node is-selected" id="node-main" data-od-id="img-node-main" style="left:80px;top:140px;width:520px;height:520px">
+              <div class="img-node-meta">
+                <span class="fname" id="fname-main">main_image · v2 · 当前</span>
+                <span class="dims" id="dims-main">product_scale 0.80</span>
+              </div>
+              <span class="corner-handle bl"></span>
+              <span class="corner-handle br"></span>
+              <div class="img-node-inner" style="background:#fff">
+                <div class="img-node-visual" style="position:relative;background:#fff"><img id="img-main" src="../../fixtures/echobyte-razor/images/main.jpg" alt="主图 v2" style="position:absolute;left:50%;top:50%;height:100%;transform:translate(-50%,-50%)" /></div>
+                <div class="mark-layer" data-node="main"></div>
+              </div>
+            </div>
+            <div class="img-node" id="node-prev" data-readonly="1" data-od-id="img-node-prev" style="left:680px;top:140px;width:520px;height:520px;opacity:.7">
+              <div class="img-node-meta">
+                <span class="fname">main_image · v1 · 已被取代</span>
+                <span class="dims">product_scale 0.62 · 只读</span>
+              </div>
+              <div class="img-node-inner" style="background:#fff">
+                <div class="img-node-visual" style="position:relative;background:#fff"><img id="img-prev" src="../../fixtures/echobyte-razor/images/main.jpg" alt="主图 v1" style="position:absolute;left:50%;top:50%;height:77.5%;transform:translate(-50%,-50%)" /></div>
+                <div class="mark-layer" data-node="prev"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="node-toolbar is-visible" id="node-toolbar" data-od-id="node-toolbar">
+            <button type="button" data-action="upscale" title="实验中：是否并入 edit_product_image 的 operation，待 M0-A" style="color:var(--meta)">HD Upscale · 实验中</button>
+            <button type="button" data-action="remove-bg" title="实验中：抠图质量待 M0-A" style="color:var(--meta)">Remove bg · 实验中</button>
+            <button type="button" data-action="edit-text" title="主图不允许叠加文字" style="color:var(--meta);text-decoration:line-through">Edit text</button>
+            <button type="button" data-action="mark-edit" class="is-active">Mark edit</button>
+            <button type="button" class="tb-icon" data-action="download" title="下载" aria-label="下载">↓</button>
+          </div>
+
+          <aside class="v-toolbar" data-od-id="v-toolbar" aria-label="竖向工具栏">
+            <button type="button" class="v-tool" id="vt-select" title="选择与移动">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 3l7 7-3 1 1 3-5-11z"/><path d="M14 3h7v7"/><path d="M14 14h7v7"/></svg>
+            </button>
+            <button type="button" class="v-tool" id="vt-ref" title="上传参考图">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+            </button>
+            <button type="button" class="v-tool is-active" id="vt-mark" title="Mark 标记">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8 19 13M17.8 6.2 19 5M12 2v2M12 20v2M5 13H3M5 6.2 3.8 5M9.2 6.2 8 5M9.2 11.8 8 13"/></svg>
+            </button>
+          </aside>
+
+          <div class="canvas-zoom" data-od-id="canvas-zoom">
+            <button type="button" id="zoom-out" aria-label="缩小">−</button>
+            <span id="zoom-label">17%</span>
+            <button type="button" id="zoom-in" aria-label="放大">+</button>
+          </div>
+
+          <div class="task-panel is-collapsed" id="task-panel" data-od-id="task-panel">
+            <div class="task-panel-head" id="task-toggle">
+              <span>圈选反馈</span>
+              <span id="task-count" style="color:var(--muted);font-weight:500">0</span>
+            </div>
+            <div class="task-panel-body" id="task-list">
+              <div class="task-empty" id="task-empty">在主图上圈选一块，写下这一块要怎么改。每个圈选是一条带区域的反馈。</div>
+            </div>
+            <div class="task-panel-foot">
+              <button type="button" class="btn btn-teal" id="batch-submit" style="width:100%">作为反馈提交</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="sr-only" id="version-label" data-od-id="version-label">工件 v2.1</p>
+    <div class="toast" id="toast" data-od-id="save-toast"></div>
+  </div>
+  <script>
+(function () {
+  var SKILLS = [
+    { name: 'image', desc: '主图和副图的第一版和后续编辑（只是提示，Agent 仍可中途换 Skill）' },
+    { name: 'competitor_research', desc: '看竞品怎么做主图，写成 research_note' },
+    { name: 'compliance_review', desc: '对这一版跑模型型检查并解读' }
+  ];
+  var params = new URLSearchParams(window.location.search);
+  var sku = params.get('task') || 'echo';
+  var from = params.get('from') || 'warehouse';
+
+  var viewport = document.getElementById('canvas-viewport');
+  var world = document.getElementById('canvas-world');
+  var designCol = document.getElementById('design-column');
+  var nodeToolbar = document.getElementById('node-toolbar');
+  var selectedNode = document.getElementById('node-main');
+  var scale = 0.62;
+  var panX = 30;
+  var panY = 10;
+  var markMode = true;
+  var tasks = [];
+  var taskId = 0;
+  var version = 2.1;
+  var undoStack = [];
+  var redoStack = [];
+
+  function applyTransform() {
+    world.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + scale + ')';
+    document.getElementById('zoom-label').textContent = Math.round(scale * 100) + '%';
+  }
+  applyTransform();
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('is-visible');
+    setTimeout(function () { t.classList.remove('is-visible'); }, 2400);
+  }
+
+  function pulseCanvas() {
+    designCol.classList.remove('is-pulse');
+    void designCol.offsetWidth;
+    designCol.classList.add('is-pulse');
+  }
+
+  function selectNode(node) {
+    document.querySelectorAll('.img-node').forEach(function (n) { n.classList.remove('is-selected'); });
+    selectedNode = node;
+    node.classList.add('is-selected');
+    positionNodeToolbar();
+  }
+
+  function positionNodeToolbar() {
+    if (!selectedNode) return;
+    var vr = viewport.getBoundingClientRect();
+    var nr = selectedNode.getBoundingClientRect();
+    var cx = nr.left - vr.left + nr.width / 2;
+    var top = nr.top - vr.top - 52;
+    nodeToolbar.style.left = cx + 'px';
+    nodeToolbar.style.top = Math.max(64, top) + 'px';
+    nodeToolbar.classList.add('is-visible');
+  }
+
+  document.querySelectorAll('.img-node').forEach(function (node) {
+    node.addEventListener('pointerdown', function (e) {
+      if (e.target.classList.contains('resize-handle') || e.target.classList.contains('mark-rect')) return;
+      selectNode(node);
+      if (markMode && e.target.closest('.img-node-inner') && !e.altKey) return;
+      if (e.target.closest('.mark-layer')) return;
+      var startX = e.clientX;
+      var startY = e.clientY;
+      var origL = parseFloat(node.style.left) || 0;
+      var origT = parseFloat(node.style.top) || 0;
+      node.setPointerCapture(e.pointerId);
+      function onMove(ev) {
+        var dx = (ev.clientX - startX) / scale;
+        var dy = (ev.clientY - startY) / scale;
+        node.style.left = origL + dx + 'px';
+        node.style.top = origT + dy + 'px';
+        positionNodeToolbar();
+      }
+      function onUp() {
+        node.removeEventListener('pointermove', onMove);
+        node.removeEventListener('pointerup', onUp);
+      }
+      node.addEventListener('pointermove', onMove);
+      node.addEventListener('pointerup', onUp);
+    });
+  });
+
+  document.querySelectorAll('.resize-handle').forEach(function (handle) {
+    handle.addEventListener('pointerdown', function (e) {
+      e.stopPropagation();
+      var node = handle.closest('.img-node');
+      selectNode(node);
+      var startX = e.clientX;
+      var startY = e.clientY;
+      var w0 = node.offsetWidth;
+      var h0 = node.offsetHeight;
+      node.setPointerCapture(e.pointerId);
+      function onMove(ev) {
+        var dw = (ev.clientX - startX) / scale;
+        var dh = (ev.clientY - startY) / scale;
+        node.style.width = Math.max(80, w0 + dw) + 'px';
+        node.style.height = Math.max(60, h0 + dh) + 'px';
+        positionNodeToolbar();
+      }
+      function onUp() {
+        node.removeEventListener('pointermove', onMove);
+        node.removeEventListener('pointerup', onUp);
+      }
+      node.addEventListener('pointermove', onMove);
+      node.addEventListener('pointerup', onUp);
+    });
+  });
+
+  var panning = false;
+  var panStartX, panStartY, panOrigX, panOrigY;
+  viewport.addEventListener('pointerdown', function (e) {
+    if (e.target === viewport || e.target.classList.contains('canvas-world')) {
+      if (!markMode || e.altKey) {
+        panning = true;
+        viewport.classList.add('is-panning');
+        panStartX = e.clientX;
+        panStartY = e.clientY;
+        panOrigX = panX;
+        panOrigY = panY;
+        viewport.setPointerCapture(e.pointerId);
+      }
+    }
+  });
+  viewport.addEventListener('pointermove', function (e) {
+    if (!panning) return;
+    panX = panOrigX + (e.clientX - panStartX);
+    panY = panOrigY + (e.clientY - panStartY);
+    applyTransform();
+    positionNodeToolbar();
+  });
+  viewport.addEventListener('pointerup', function () {
+    panning = false;
+    viewport.classList.remove('is-panning');
+  });
+
+  viewport.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    var delta = e.deltaY > 0 ? -0.02 : 0.02;
+    scale = Math.min(1.2, Math.max(0.08, scale + delta));
+    applyTransform();
+    positionNodeToolbar();
+  }, { passive: false });
+
+  document.getElementById('zoom-in').addEventListener('click', function () {
+    scale = Math.min(1.2, scale + 0.05);
+    applyTransform();
+    positionNodeToolbar();
+  });
+  document.getElementById('zoom-out').addEventListener('click', function () {
+    scale = Math.max(0.08, scale - 0.05);
+    applyTransform();
+    positionNodeToolbar();
+  });
+
+  function setMarkMode(on) {
+    markMode = on;
+    viewport.classList.toggle('is-mark', on);
+    document.getElementById('vt-mark').classList.toggle('is-active', on);
+    document.getElementById('vt-select').classList.toggle('is-active', !on);
+    var markBtn = nodeToolbar.querySelector('[data-action="mark-edit"]');
+    if (markBtn) markBtn.classList.toggle('is-active', on);
+  }
+
+  document.getElementById('vt-mark').addEventListener('click', function () { setMarkMode(true); });
+  document.getElementById('vt-select').addEventListener('click', function () { setMarkMode(false); });
+  document.getElementById('vt-ref').addEventListener('click', function () {
+    showToast('参考图已添加到画布（示意）');
+    pulseCanvas();
+  });
+
+  nodeToolbar.querySelectorAll('button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var action = btn.getAttribute('data-action');
+      if (action === 'mark-edit') { setMarkMode(true); return; }
+      if (action === 'download') { showToast('已导出当前选中图片'); return; }
+      if (action === 'edit-text') { showToast('主图不允许叠加文字（main_image_text = forbidden）。Edit text 只对副图开放。'); return; }
+      showToast('实验中：operation 是否并入 edit_product_image 待 M0-A 确定，暂不可用。');
+    });
+  });
+
+  var drawing = false;
+  var drawStart = {};
+  var activeRect = null;
+  var activeInner = null;
+
+  function getMarkLayer(node) {
+    return node.querySelector('.mark-layer');
+  }
+
+  document.querySelectorAll('.img-node-inner').forEach(function (inner) {
+    inner.addEventListener('pointerdown', function (e) {
+      if (!markMode) return;
+      if (inner.closest('.img-node').dataset.readonly) return;
+      var node = inner.closest('.img-node');
+      selectNode(node);
+      activeInner = inner;
+      var rect = inner.getBoundingClientRect();
+      drawing = true;
+      drawStart.x = (e.clientX - rect.left) / (rect.width / inner.offsetWidth);
+      drawStart.y = (e.clientY - rect.top) / (rect.height / inner.offsetHeight);
+      activeRect = document.createElement('div');
+      activeRect.className = 'mark-rect';
+      activeRect.innerHTML = '<span class="mark-dot tl"></span><span class="mark-dot tr"></span><span class="mark-dot bl"></span><span class="mark-dot br"></span>';
+      getMarkLayer(node).appendChild(activeRect);
+      inner.setPointerCapture(e.pointerId);
+      e.stopPropagation();
+    });
+    inner.addEventListener('pointermove', function (e) {
+      if (!drawing || !activeRect) return;
+      var rect = inner.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / (rect.width / inner.offsetWidth);
+      var y = (e.clientY - rect.top) / (rect.height / inner.offsetHeight);
+      var left = Math.min(drawStart.x, x);
+      var top = Math.min(drawStart.y, y);
+      var w = Math.abs(x - drawStart.x);
+      var h = Math.abs(y - drawStart.y);
+      activeRect.style.left = left + 'px';
+      activeRect.style.top = top + 'px';
+      activeRect.style.width = w + 'px';
+      activeRect.style.height = h + 'px';
+    });
+    inner.addEventListener('pointerup', function () {
+      if (!drawing || !activeRect) return;
+      drawing = false;
+      var w = parseFloat(activeRect.style.width) || 0;
+      var h = parseFloat(activeRect.style.height) || 0;
+      if (w < 16 || h < 16) {
+        activeRect.remove();
+        activeRect = null;
+        return;
+      }
+      var node = inner.closest('.img-node');
+      undoStack.push(JSON.stringify(tasks));
+      redoStack = [];
+      taskId += 1;
+      var task = {
+        id: taskId,
+        nodeId: node.id,
+        left: parseFloat(activeRect.style.left),
+        top: parseFloat(activeRect.style.top),
+        w: w,
+        h: h,
+        prompt: '去掉这一块的反光，其他不动'
+      };
+      tasks.push(task);
+      activeRect.dataset.taskId = String(taskId);
+      activeRect = null;
+      renderTasks();
+      expandTaskPanel();
+      showToast('圈选已加入反馈清单，提交后才会产生 Run');
+    });
+  });
+
+  function expandTaskPanel() {
+    var panel = document.getElementById('task-panel');
+    panel.classList.remove('is-collapsed');
+  }
+
+  document.getElementById('task-toggle').addEventListener('click', function () {
+    document.getElementById('task-panel').classList.toggle('is-collapsed');
+  });
+
+  function syncMarksFromTasks() {
+    document.querySelectorAll('.mark-layer').forEach(function (layer) { layer.innerHTML = ''; });
+    tasks.forEach(function (task) {
+      var node = document.getElementById(task.nodeId);
+      if (!node) return;
+      var layer = getMarkLayer(node);
+      var el = document.createElement('div');
+      el.className = 'mark-rect';
+      el.dataset.taskId = String(task.id);
+      el.style.left = task.left + 'px';
+      el.style.top = task.top + 'px';
+      el.style.width = task.w + 'px';
+      el.style.height = task.h + 'px';
+      el.innerHTML = '<span class="mark-dot tl"></span><span class="mark-dot tr"></span><span class="mark-dot bl"></span><span class="mark-dot br"></span>';
+      layer.appendChild(el);
+    });
+  }
+
+  function renderTasks() {
+    var list = document.getElementById('task-list');
+    var empty = document.getElementById('task-empty');
+    document.getElementById('task-count').textContent = tasks.length;
+    if (!tasks.length) {
+      empty.style.display = 'block';
+      list.querySelectorAll('.task-row').forEach(function (r) { r.remove(); });
+      return;
+    }
+    empty.style.display = 'none';
+    list.querySelectorAll('.task-row').forEach(function (r) { r.remove(); });
+    tasks.forEach(function (task, i) {
+      var row = document.createElement('div');
+      row.className = 'task-row';
+      row.innerHTML =
+        '<label>反馈 ' + (i + 1) + ' · 区域 ' + (function () { var n = document.getElementById(task.nodeId); var inn = n && n.querySelector('.img-node-inner'); if (!inn) return ''; return 'x ' + (task.left / inn.offsetWidth).toFixed(2) + ' y ' + (task.top / inn.offsetHeight).toFixed(2) + ' w ' + (task.w / inn.offsetWidth).toFixed(2) + ' h ' + (task.h / inn.offsetHeight).toFixed(2); })() + '</label>' +
+        '<input type="text" value="' + task.prompt.replace(/"/g, '&quot;') + '" />' +
+        '<div class="task-row-actions"><button type="button" class="btn btn-sm btn-ghost task-del">删除</button></div>';
+      list.appendChild(row);
+      row.querySelector('input').addEventListener('change', function (e) { task.prompt = e.target.value; });
+      row.querySelector('.task-del').addEventListener('click', function () {
+        undoStack.push(JSON.stringify(tasks));
+        tasks = tasks.filter(function (t) { return t.id !== task.id; });
+        syncMarksFromTasks();
+        renderTasks();
+      });
+    });
+  }
+
+  document.getElementById('batch-submit').addEventListener('click', function () {
+    if (!tasks.length) { showToast('请先在主图上圈选'); return; }
+    appendAgentAck('已记为 ' + tasks.length + ' 条 Feedback（source = canvas_comment，target_slot = main_image，带区域）。Run 入队，write_scope 只含主图；完成后出现新版本，由规则检查决定能否成为当前版本。');
+    pulseCanvas();
+  });
+
+  function appendUserTurn(text) {
+    var wrap = document.createElement('div');
+    wrap.className = 'thread-msg-dynamic';
+    wrap.innerHTML = '<div class="msg-user"></div>';
+    wrap.querySelector('.msg-user').textContent = text;
+    document.getElementById('thread-dynamic').appendChild(wrap);
+    var th = document.getElementById('agent-thread');
+    th.scrollTop = th.scrollHeight;
+  }
+
+  function appendAgentAck(text) {
+    var wrap = document.createElement('div');
+    wrap.className = 'thread-msg-dynamic msg-assistant';
+    wrap.innerHTML =
+      '<div class="agent-identity"><span class="agent-avatar">AI</span><span>电商设计 Agent</span></div>' +
+      '<p class="assistant-lede"></p>';
+    wrap.querySelector('.assistant-lede').textContent = text;
+    document.getElementById('thread-dynamic').appendChild(wrap);
+    var th = document.getElementById('agent-thread');
+    th.scrollTop = th.scrollHeight;
+    pulseCanvas();
+  }
+
+  document.getElementById('chat-artifact-link').addEventListener('click', function () {
+    selectNode(document.getElementById('node-main'));
+    pulseCanvas();
+  });
+
+  var slashMenu = document.getElementById('slash-menu');
+  slashMenu.innerHTML = SKILLS.map(function (s, i) {
+    return '<button type="button" class="slash-item" data-idx="' + i + '">' + s.name + '<small>' + s.desc + '</small></button>';
+  }).join('');
+  slashMenu.querySelectorAll('.slash-item').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var s = SKILLS[parseInt(btn.getAttribute('data-idx'), 10)];
+      var input = document.getElementById('agent-input');
+      input.value = '/' + s.name + ' ';
+      slashMenu.classList.remove('is-open');
+      input.focus();
+    });
+  });
+
+  var agentInput = document.getElementById('agent-input');
+  agentInput.addEventListener('input', function () {
+    var v = agentInput.value;
+    slashMenu.classList.toggle('is-open', v === '/' || (v.length > 1 && v[0] === '/' && v.indexOf(' ') === -1));
+  });
+  agentInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') slashMenu.classList.remove('is-open');
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      document.getElementById('agent-send').click();
+    }
+  });
+
+  document.getElementById('agent-send').addEventListener('click', function () {
+    var text = (agentInput.value || '').trim();
+    if (!text) return;
+    agentInput.value = '';
+    slashMenu.classList.remove('is-open');
+    appendUserTurn(text);
+    appendAgentAck('已记为 Feedback（目标：主图 · v2）。发言只入队；完成后出现新版本。也可以在主图上圈选局部区域。');
+  });
+
+  function autoSave() {}
+
+  document.getElementById('save-version').addEventListener('click', function () {
+    showToast('不需要手动保存：每次修改都是新版本。要换当前版本，请在工作台的版本里“从这版继续”。');
+  });
+
+  document.getElementById('canvas-close').addEventListener('click', function () {
+    window.location.href = 'workbench.html?view=chat';
+  });
+
+  if (from === 'canvas') {
+    showToast('从画布进入主图聚焦');
+  }
+
+
+  if (sku === 'nk') {
+    var nkSrc = '../../fixtures/foil-shaver-com/images/main.jpg';
+    document.getElementById('img-main').src = nkSrc;
+    document.getElementById('img-main').style.height = '100%';
+    document.getElementById('fname-main').textContent = 'main_image · v1 · 导入 · 基线问题';
+    document.getElementById('dims-main').textContent = '外盒与配件的拼图，待核对';
+    document.getElementById('node-prev').style.display = 'none';
+    document.getElementById('focus-product').textContent = 'NKTMXY 迷你电动剃须刀';
+    document.getElementById('composer-file-chip').textContent = '目标：主图 · v1（导入）';
+    document.getElementById('save-version').textContent = '主图 v1 · 导入';
+    document.getElementById('seed-lede').textContent = '这是导入的第一版，直接是当前版本。评估发现它是外盒、多视角和配件的拼图，可能不符合主图规范（待核对）。你可以说“改成单商品白底图”。';
+    document.querySelector('[data-od-id="delivery-bar"]').style.display = 'none';
+  }
+  window.addEventListener('resize', positionNodeToolbar);
+  selectNode(selectedNode);
+  setMarkMode(true);
+})();
+  </script>
+</body>
+</html>

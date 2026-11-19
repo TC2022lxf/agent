@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "image-design.html",
+  "entry": "image-design.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-10-21T06:07:23.261Z",
+  "updatedAt": "2026-10-22T06:01:44.832Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

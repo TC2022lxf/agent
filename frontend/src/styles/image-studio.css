@@ -1,0 +1,471 @@
+/* Copied from design/…/image-design.html, scoped to .imgpage. */
+.imgpage {
+  --bg: #ffffff;
+  --surface: #f5f5f5;
+  --surface-warm: #fafafa;
+  --fg: #0d0d0d;
+  --fg-2: #1a1a1a;
+  --muted: #6e6e6e;
+  --meta: #9b9b9b;
+  --border: #e5e5e5;
+  --border-soft: #ededed;
+  --accent: #10a37f;
+  --accent-on: #ffffff;
+  --accent-hover: #0a7a5e;
+  --font-display: "Signifier", "Source Serif Pro", Georgia, serif;
+  --font-body: "Söhne", "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --sidebar-w: 240px;
+  --agent-col-w: 400px;
+  --mark-blue: #2563eb;
+  --mark-blue-soft: color-mix(in oklab, var(--mark-blue) 14%, transparent);
+  --canvas-bg: #ececec;
+  --canvas-dot: color-mix(in oklab, var(--muted) 35%, transparent);
+  --focus-ring: 0 0 0 3px color-mix(in oklab, var(--accent) 14%, transparent);
+  /* Conversation lane: half of the viewport when solo, half of the stage when split with canvas. */
+  --chat-half: 50%;
+  --chat-gutter: 20px;
+}
+.imgpage .design-stage { flex: 1; min-width: 0; display: flex; min-height: 0; }
+/* Chat and canvas are equals. The canvas used to take every pixel the chat did not need
+   (`flex: 1` next to a fixed 400px column), so on a wide screen it owned ~75% and the
+   conversation became a strip. Equal `flex-basis` keeps the pair balanced at any width. */
+.imgpage .agent-column {
+  flex: 0 0 var(--chat-half); width: var(--chat-half); max-width: var(--chat-half);
+  min-width: min(340px, var(--chat-half)); display: flex; flex-direction: column;
+  border-right: 1px solid var(--border); background: var(--bg); min-height: 0;
+  position: relative;
+}
+.imgpage .agent-chat-shell {
+  flex: 1; min-height: 0; position: relative; display: flex; flex-direction: column;
+}
+.imgpage .agent-col-head {
+  flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 10px; border-bottom: 1px solid var(--border-soft);
+}
+.imgpage .agent-model {
+  display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; border: none; background: transparent;
+  font-family: inherit; cursor: pointer; padding: 4px 6px; border-radius: 8px;
+}
+.imgpage .agent-model:hover { background: var(--surface-warm); }
+.imgpage .agent-model svg { width: 14px; height: 14px; color: var(--muted); }
+.imgpage .agent-head-actions { display: flex; align-items: center; gap: 4px; }
+.imgpage .icon-btn {
+  width: 34px; height: 34px; border: none; border-radius: 10px; background: transparent;
+  cursor: pointer; color: var(--muted); display: grid; place-items: center;
+}
+.imgpage .icon-btn:hover { background: var(--surface-warm); color: var(--fg); }
+.imgpage .icon-btn svg { width: 18px; height: 18px; }
+.imgpage .agent-thread {
+  flex: 1; min-height: 0; overflow-y: auto;
+  padding: 20px var(--chat-gutter) 148px;
+  display: flex; flex-direction: column; align-items: stretch;
+}
+.imgpage .agent-thread-inner {
+  width: 100%; max-width: 100%; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 20px;
+}
+.imgpage .agent-thread-hint {
+  margin: 0; padding: 10px 12px; border: 1px dashed var(--border); border-radius: 12px;
+  font-size: 13px; line-height: 1.55; color: var(--meta);
+}
+.imgpage .thread-turn {
+  display: flex; flex-direction: column; gap: 10px; width: 100%;
+}
+.imgpage .msg-user {
+  align-self: flex-end; max-width: 88%; padding: 12px 16px;
+  background: color-mix(in oklab, var(--accent) 16%, var(--bg));
+  border: 1px solid color-mix(in oklab, var(--accent) 32%, var(--border-soft));
+  border-radius: 20px 20px 6px 20px;
+  font-size: 15px; line-height: 1.55; color: var(--fg-2);
+}
+.imgpage .msg-assistant {
+  align-self: stretch; width: 100%; display: flex; flex-direction: column; gap: 8px;
+}
+/* AI prose: full lane width, no bubble — only the user side gets a pill. */
+.imgpage .msg-assistant-body {
+  width: 100%; max-width: 100%; padding: 0;
+  background: transparent; border: none; border-radius: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.imgpage .msg-assistant-body .working { margin: 0; font-size: 14px; }
+.imgpage .msg-assistant-body .delivery-bar { width: 100%; }
+.imgpage .working { display: flex; align-items: baseline; gap: 8px; font-size: 14px; color: var(--fg-2); }
+.imgpage .working-dot {
+  flex-shrink: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+  animation: working-pulse 1.15s ease-in-out infinite;
+}
+.imgpage .working-text { font-weight: 500; }
+.imgpage .working-elapsed { font-size: 12px; color: var(--meta); font-family: var(--font-mono); }
+@media (prefers-reduced-motion: reduce) { .imgpage .working-dot { animation: none; opacity: 0.85; } }
+@keyframes working-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.imgpage .agent-identity { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; padding-left: 2px; }
+.imgpage .agent-avatar {
+  width: 22px; height: 22px; border-radius: 50%; background: var(--surface); color: var(--fg);
+  border: 1px solid var(--border-soft);
+  display: grid; place-items: center; font-size: 10px; font-weight: 600;
+}
+.imgpage .assistant-lede { font-size: 15px; line-height: 1.6; color: var(--fg-2); margin: 0; }
+.imgpage .chat-result-hero {
+  width: 100%; border-radius: var(--radius-md); overflow: hidden;
+  border: 1px solid var(--border-soft); aspect-ratio: 16 / 10;
+  background: linear-gradient(165deg, #e8e6e1 0%, #d4cfc4 28%, #a8b5a0 45%, #c9d4c5 62%, #ebe8e2 100%);
+  box-shadow: 0 4px 20px color-mix(in oklab, var(--fg) 6%, transparent);
+}
+.imgpage .chat-thumb-row { display: flex; gap: 8px; margin-top: -4px; }
+.imgpage .chat-thumb {
+  width: 56px; height: 56px; border-radius: 10px; border: 1px solid var(--border-soft);
+  background: linear-gradient(145deg, #e5e2dc, #c8c4bc); cursor: pointer;
+}
+.imgpage .chat-thumb.is-active { box-shadow: 0 0 0 2px var(--fg); }
+.imgpage .delivery-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius-sm); background: var(--surface-warm);
+  border: 1px solid var(--border-soft); font-size: 13px;
+}
+.imgpage .delivery-bar .done { display: flex; align-items: center; gap: 8px; color: var(--fg-2); font-weight: 500; }
+.imgpage .delivery-check {
+  width: 20px; height: 20px; border-radius: 50%; background: color-mix(in oklab, var(--accent) 20%, var(--bg));
+  color: var(--accent-hover); display: grid; place-items: center; font-size: 11px;
+}
+.imgpage .delivery-steps { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
+.imgpage .thread-msg-dynamic { display: flex; flex-direction: column; gap: 8px; }
+.imgpage .thread-msg-dynamic .msg-user { align-self: flex-end; background: var(--surface-warm); }
+.imgpage .agent-composer {
+  position: absolute; left: var(--chat-gutter); right: var(--chat-gutter); bottom: 14px;
+  z-index: 12; width: auto; max-width: none;
+  padding: 0; border: none; pointer-events: none;
+}
+.imgpage .agent-composer .composer-pill { pointer-events: auto; }
+.imgpage .composer-pill {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 12px 14px 10px; border: 1px solid var(--border); border-radius: 26px;
+  background: color-mix(in oklab, var(--bg) 94%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px color-mix(in oklab, var(--fg) 8%, transparent),
+    0 0 0 1px color-mix(in oklab, var(--bg) 80%, transparent);
+}
+.imgpage .composer-pill:focus-within {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  box-shadow: 0 4px 28px color-mix(in oklab, var(--fg) 10%, transparent), var(--focus-ring);
+}
+.imgpage .composer-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.imgpage .file-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
+  border-radius: 9999px; background: var(--surface); font-size: 12px; color: var(--fg-2);
+  max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.imgpage .file-chip::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+}
+.imgpage .composer-pill textarea {
+  width: 100%; border: none; resize: none; font: inherit; font-size: 15px;
+  min-height: 24px; max-height: 80px; background: transparent; padding: 0 4px;
+}
+.imgpage .composer-pill textarea:focus { outline: none; }
+.imgpage .composer-toolbar {
+  display: flex; align-items: center; justify-content: space-between; padding: 0 2px;
+}
+.imgpage .composer-tools-left { display: flex; align-items: center; gap: 2px; }
+.imgpage .composer-attach {
+  width: 32px; height: 32px; border: none; border-radius: 50%;
+  background: transparent; font-size: 22px; line-height: 1; color: var(--fg);
+  cursor: pointer;
+}
+.imgpage .composer-attach:hover:not(:disabled) { background: var(--surface); }
+.imgpage .composer-attach:disabled { opacity: 0.4; cursor: not-allowed; }
+.imgpage .composer-attach-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.imgpage .composer-attach-row .attach-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px;
+  border: 1px solid var(--border); border-radius: 9999px; background: var(--surface);
+  font-size: 12px;
+}
+.imgpage .composer-attach-row .attach-chip span { color: var(--muted); }
+.imgpage .composer-attach-row .attach-chip button {
+  border: 0; background: transparent; cursor: pointer; color: var(--meta); font-size: 14px; line-height: 1;
+}
+.imgpage .composer-send {
+  width: 36px; height: 36px; border: none; border-radius: 50%;
+  background: var(--accent); color: var(--accent-on);
+  cursor: pointer; display: grid; place-items: center;
+  transition: background 0.15s ease;
+}
+.imgpage .composer-send:hover:not(:disabled) { background: var(--accent-hover); }
+.imgpage .composer-send:disabled { opacity: 0.45; cursor: not-allowed; }
+.imgpage .composer-send svg { width: 18px; height: 18px; }
+/* Stop keeps a distinct control; send stays accent when idle. */
+.imgpage .composer-send.is-stop { background: var(--fg); color: var(--accent-on); }
+.imgpage .composer-send.is-stop:hover { background: var(--danger, #b4442f); }
+.imgpage .composer-send.is-stop svg { width: 14px; height: 14px; }
+.imgpage .composer-status { margin: 6px 0 0; font-size: 12px; color: var(--meta); text-align: center; }
+.imgpage .human-input-panel {
+  width: 100%; margin: 0; padding: 12px 14px;
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, var(--border));
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--accent) 6%, var(--bg));
+}
+.imgpage .human-input-question { margin: 0 0 8px; font-size: 14px; line-height: 1.55; color: var(--fg-2); }
+/* Reply text as it streams. Same typography as the settled answer, so nothing jumps when the
+   Run finishes and the authoritative `answer` replaces the live text. */
+.imgpage .working.is-streaming { display: block; margin: 0; }
+.imgpage .working-stream {
+  margin: 0 0 8px; font-size: 15px; line-height: 1.7; color: var(--fg);
+  white-space: pre-wrap; word-break: break-word;
+}
+.imgpage .working-stream::after {
+  content: ''; display: inline-block; width: 2px; height: 1em; margin-left: 2px;
+  vertical-align: -0.15em; background: var(--accent); animation: caret 1s steps(2) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .imgpage .working-stream::after { animation: none; } }
+/* Follow-up suggestions: quieter than an answer button, because agreeing to them is optional. */
+.imgpage .follow-ups { margin: 10px 0 2px; }
+.imgpage .follow-ups-label {
+  display: block; margin-bottom: 6px; font-size: 11px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--muted);
+}
+.imgpage .follow-ups-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.imgpage .follow-up-chip {
+  padding: 6px 12px; border: 1px dashed var(--border); border-radius: 999px;
+  background: transparent; font: inherit; font-size: 13px; color: var(--fg-2); cursor: pointer;
+  text-align: left; line-height: 1.4;
+}
+.imgpage .follow-up-chip:hover:not(:disabled) {
+  border-style: solid; border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+  background: color-mix(in oklab, var(--accent) 6%, transparent); color: var(--fg);
+}
+.imgpage .follow-up-chip:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Tool cards on the image page share the chat card; only the type scale is tightened. */
+.imgpage .tool-cards { margin: 8px 0; }
+.imgpage .tool-card { background: #fff; }
+.imgpage .human-input-free input {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; font: inherit;
+}
+.imgpage .slash-menu {
+  position: absolute; left: 14px; bottom: 100%; margin-bottom: 6px; z-index: 40;
+  width: min(280px, calc(100% - 28px)); background: var(--bg);
+  border: 1px solid var(--border-soft); border-radius: var(--radius-md);
+  box-shadow: 0 12px 40px color-mix(in oklab, var(--fg) 12%, transparent);
+  display: none; max-height: 200px; overflow-y: auto;
+}
+.imgpage .slash-menu.is-open { display: block; }
+.imgpage .slash-item {
+  display: block; width: 100%; padding: 10px 14px; border: none; background: transparent;
+  text-align: left; font: inherit; font-size: 13px; cursor: pointer;
+}
+.imgpage .slash-item:hover { background: var(--surface-warm); }
+.imgpage .slash-item small { display: block; font-size: 11px; color: var(--muted); margin-top: 2px; }
+.imgpage .design-column {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; min-height: 0;
+  position: relative;
+  background-color: var(--canvas-bg);
+  background-image: radial-gradient(circle, var(--canvas-dot) 1.25px, transparent 1.25px);
+  background-size: 20px 20px;
+}
+.imgpage .img-version-strip {
+  position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 26;
+  display: flex; gap: 8px; max-width: min(560px, calc(100% - 120px));
+  padding: 6px 8px; overflow-x: auto;
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  border: 1px solid var(--border-soft); border-radius: 14px;
+  box-shadow: 0 6px 24px color-mix(in oklab, var(--fg) 8%, transparent);
+}
+.imgpage .img-version-thumb {
+  flex-shrink: 0; position: relative; width: 52px; height: 52px; padding: 0;
+  border: 2px solid var(--border-soft); border-radius: 10px; background: var(--surface);
+  cursor: pointer; overflow: hidden;
+}
+.imgpage .img-version-thumb img {
+  width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none;
+}
+.imgpage .img-version-thumb-label {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 2px 4px;
+  font-size: 9px; font-weight: 600; font-family: var(--font-mono); text-align: center;
+  color: var(--accent-on); background: linear-gradient(transparent, color-mix(in oklab, var(--fg) 72%, transparent));
+}
+.imgpage .img-version-thumb:hover { border-color: var(--fg); }
+.imgpage .img-version-thumb.is-focus {
+  border-color: var(--mark-blue); box-shadow: 0 0 0 2px color-mix(in oklab, var(--mark-blue) 25%, transparent);
+}
+.imgpage .img-version-thumb.is-current:not(.is-focus) {
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 55%, transparent);
+}
+.imgpage .canvas-viewport {
+  flex: 1; min-height: 0; position: relative; overflow: hidden; cursor: grab;
+  background-color: transparent;
+  background-image: radial-gradient(circle, var(--canvas-dot) 1.25px, transparent 1.25px);
+  background-size: 20px 20px;
+}
+.imgpage .canvas-viewport.is-panning { cursor: grabbing; }
+.imgpage .canvas-viewport.is-mark { cursor: crosshair; }
+.imgpage .canvas-world {
+  position: absolute; left: 0; top: 0; width: 5000px; height: 4000px;
+  transform-origin: 0 0;
+}
+.imgpage .canvas-chrome-btn {
+  position: absolute; z-index: 28; width: 40px; height: 40px; border-radius: 12px;
+  border: 1px solid var(--border-soft); background: var(--bg); cursor: pointer;
+  display: grid; place-items: center; box-shadow: 0 4px 16px color-mix(in oklab, var(--fg) 8%, transparent);
+}
+.imgpage .canvas-chrome-btn:hover { background: var(--surface-warm); }
+.imgpage .img-preview-mark {
+  position: absolute; top: 16px; left: 16px; z-index: 28;
+  padding: 4px 10px; border-radius: 999px;
+  border: 1px solid var(--border-soft); background: var(--bg);
+  font-size: 11px; font-weight: 600; letter-spacing: 0.04em; color: var(--muted);
+  box-shadow: 0 4px 16px color-mix(in oklab, var(--fg) 8%, transparent);
+  pointer-events: none;
+}
+.imgpage .canvas-menu { top: 14px; left: 14px; }
+.imgpage .canvas-close { top: 14px; right: 14px; font-size: 20px; line-height: 1; color: var(--muted); }
+.imgpage .canvas-save {
+  top: 14px; right: 62px; width: auto; padding: 0 12px; font-size: 12px; font-weight: 500; color: var(--fg-2);
+}
+.imgpage .img-node {
+  position: absolute; z-index: 2; touch-action: none;
+  border: 2px solid transparent; border-radius: 6px;
+  box-shadow: 0 16px 48px color-mix(in oklab, var(--fg) 14%, transparent);
+  background: var(--bg);
+}
+.imgpage .img-node.is-selected { border-color: var(--mark-blue); z-index: 5; }
+.imgpage .img-node.is-selected::before,
+.imgpage .img-node.is-selected::after {
+  content: ""; position: absolute; width: 10px; height: 10px; background: var(--bg);
+  border: 2px solid var(--mark-blue); border-radius: 50%; z-index: 8; pointer-events: none;
+}
+.imgpage .img-node.is-selected::before { top: -6px; left: -6px; }
+.imgpage .img-node.is-selected::after { top: -6px; right: -6px; }
+.imgpage .corner-handle.bl,
+.imgpage .corner-handle.br {
+  position: absolute; width: 10px; height: 10px; background: var(--bg);
+  border: 2px solid var(--mark-blue); border-radius: 50%; z-index: 8; pointer-events: none;
+}
+.imgpage .corner-handle.bl { bottom: -6px; left: -6px; }
+.imgpage .corner-handle.br { bottom: -6px; right: -6px; }
+.imgpage .img-node-inner { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 4px; }
+.imgpage .img-node-visual { width: 100%; height: 100%; display: block; pointer-events: none; }
+.imgpage .img-node-visual.is-main {
+  background: linear-gradient(165deg, #f0ede8 0%, #d8d2c8 22%, #8fa888 42%, #b8c9b0 55%, #e8e4de 78%, #d4cfc4 100%);
+}
+.imgpage .img-node-visual.is-lamp {
+  background: radial-gradient(circle at 50% 30%, #f5f0e6 0%, transparent 55%),
+    linear-gradient(180deg, #c4a574 0%, #8b7355 35%, #2a2a2a 70%, #1a1a1a 100%);
+}
+.imgpage .img-node-meta {
+  position: absolute; top: -26px; left: 0; right: 0; display: flex; justify-content: space-between;
+  align-items: baseline; pointer-events: none; font-size: 11px; color: var(--muted);
+}
+.imgpage .img-node-meta .fname { max-width: 70%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.imgpage .img-node-meta .dims { font-family: var(--font-mono); font-size: 10px; color: var(--meta); }
+.imgpage .resize-handle.se {
+  position: absolute; right: -6px; bottom: -6px; width: 10px; height: 10px;
+  background: var(--bg); border: 2px solid var(--mark-blue); border-radius: 50%; z-index: 9; cursor: nwse-resize;
+}
+.imgpage .mark-layer { position: absolute; inset: 0; pointer-events: none; }
+.imgpage .mark-rect {
+  position: absolute; border: 2px solid var(--mark-blue); background: var(--mark-blue-soft);
+  border-radius: 3px; pointer-events: auto; cursor: pointer;
+}
+.imgpage .mark-rect .mark-dot {
+  position: absolute; width: 8px; height: 8px; background: var(--mark-blue); border: 2px solid var(--bg);
+  border-radius: 50%;
+}
+.imgpage .mark-rect .mark-dot.tl { top: -5px; left: -5px; }
+.imgpage .mark-rect .mark-dot.tr { top: -5px; right: -5px; }
+.imgpage .mark-rect .mark-dot.bl { bottom: -5px; left: -5px; }
+.imgpage .mark-rect .mark-dot.br { bottom: -5px; right: -5px; }
+.imgpage .node-toolbar {
+  position: absolute; z-index: 30; display: none;
+  align-items: center; gap: 0; padding: 5px 6px;
+  background: var(--bg); border: 1px solid var(--border-soft); border-radius: 9999px;
+  box-shadow: 0 10px 32px color-mix(in oklab, var(--fg) 12%, transparent);
+  transform: translateX(-50%); white-space: nowrap;
+}
+.imgpage .node-toolbar.is-visible { display: flex; }
+.imgpage .node-toolbar button {
+  padding: 7px 14px; border: none; border-radius: 9999px; background: transparent;
+  font: inherit; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--fg-2);
+}
+.imgpage .node-toolbar button:hover { background: var(--surface-warm); }
+.imgpage .node-toolbar button.is-active { background: var(--surface); color: var(--mark-blue); }
+.imgpage .node-toolbar .tb-icon {
+  width: 36px; height: 36px; padding: 0; display: grid; place-items: center;
+}
+.imgpage .v-toolbar {
+  position: absolute; right: 18px; top: 50%; transform: translateY(-50%); z-index: 24;
+  display: flex; flex-direction: column; gap: 4px; padding: 6px;
+  background: var(--bg); border: 1px solid var(--border-soft); border-radius: 14px;
+  box-shadow: 0 6px 24px color-mix(in oklab, var(--fg) 8%, transparent);
+}
+.imgpage .v-tool {
+  width: 44px; height: 44px; border: none; border-radius: 12px; background: transparent;
+  cursor: pointer; color: var(--muted); display: grid; place-items: center;
+}
+.imgpage .v-tool:hover { background: var(--surface-warm); color: var(--fg); }
+.imgpage .v-tool.is-active { background: color-mix(in oklab, var(--mark-blue) 10%, var(--bg)); color: var(--mark-blue); }
+.imgpage .v-tool svg { width: 20px; height: 20px; }
+.imgpage .canvas-zoom {
+  position: absolute; left: 16px; bottom: 16px; z-index: 22;
+  display: flex; align-items: center; gap: 2px; padding: 4px 6px;
+  background: var(--bg); border: 1px solid var(--border-soft); border-radius: 9999px;
+  font-size: 12px; font-family: var(--font-mono); box-shadow: 0 4px 16px color-mix(in oklab, var(--fg) 6%, transparent);
+}
+.imgpage .canvas-zoom button {
+  width: 30px; height: 30px; border: none; border-radius: 50%; background: transparent;
+  cursor: pointer; font-size: 16px; line-height: 1; color: var(--fg-2);
+}
+.imgpage .canvas-zoom button:hover { background: var(--surface-warm); }
+.imgpage .task-panel {
+  position: absolute; left: 16px; bottom: 64px; z-index: 23;
+  width: min(300px, calc(100% - 100px)); max-height: 200px;
+  background: var(--bg); border: 1px solid var(--border-soft); border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px color-mix(in oklab, var(--fg) 8%, transparent);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.imgpage .task-panel.is-collapsed { max-height: none; width: auto; }
+.imgpage .task-panel.is-collapsed .task-panel-body,
+.imgpage .task-panel.is-collapsed .task-panel-foot { display: none; }
+.imgpage .task-panel-head {
+  display: flex; align-items: center; justify-content: space-between; padding: 8px 12px;
+  border-bottom: 1px solid var(--border-soft); font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.imgpage .task-panel-body { flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+.imgpage .task-row {
+  padding: 8px 10px; border: 1px solid var(--border-soft); border-radius: var(--radius-sm);
+  background: var(--surface-warm); font-size: 12px;
+}
+.imgpage .task-row label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.imgpage .task-row input {
+  width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 8px; font: inherit; font-size: 12px;
+}
+.imgpage .task-row-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px; }
+.imgpage .task-panel-foot { padding: 8px 12px; border-top: 1px solid var(--border-soft); }
+.imgpage .task-empty { padding: 12px; text-align: center; font-size: 12px; color: var(--meta); }
+/* No artifact yet: the conversation owns the whole page, no empty preview pane. */
+.imgpage .design-stage.is-empty { justify-content: center; }
+.imgpage .design-stage.is-empty .agent-column {
+  flex: 0 0 var(--chat-half); width: var(--chat-half); max-width: var(--chat-half);
+  border-right: none;
+}
+.imgpage .design-stage.is-empty .agent-thread { padding: 32px var(--chat-gutter) 148px; }
+.imgpage .btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 13px; font-weight: 500;
+  border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); cursor: pointer; font-family: inherit;
+}
+.imgpage .btn-sm { padding: 6px 10px; font-size: 12px; }
+.imgpage .btn-teal { background: var(--accent); color: var(--accent-on); border-color: var(--accent); }
+.imgpage .btn-ghost { border-color: transparent; background: transparent; }
+.imgpage .btn-ghost:hover { background: var(--surface-warm); }
+.imgpage .toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  padding: 10px 18px; background: var(--fg); color: var(--accent-on); font-size: 13px;
+  border-radius: 9999px; opacity: 0; pointer-events: none; transition: opacity 0.2s; z-index: 50;
+}
+.imgpage .toast.is-visible { opacity: 1; }
+.imgpage .design-column.is-pulse .canvas-viewport { animation: canvas-pulse 0.55s ease; }
+@keyframes canvas-pulse {
+  50% { box-shadow: inset 0 0 0 2px color-mix(in oklab, var(--accent) 35%, transparent); }
+}

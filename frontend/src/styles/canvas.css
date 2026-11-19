@@ -1,0 +1,359 @@
+/* Canvas Agent workspace (decisions/0029, 0031). Chrome follows stitch_demo/workspace.html
+   (overlay top bar, glass context card, bottom prompt dock, zoom pill) and uses the app
+   theme tokens, not a second palette. The Image Agent preview does not use these classes. */
+
+.canvas-app { height: 100vh; }
+.canvas-page {
+  --canvas-bg: var(--surface);
+  --canvas-dot: color-mix(in oklab, var(--fg) 16%, transparent);
+  --mark-blue: #2563eb;
+  --mark-blue-soft: color-mix(in oklab, var(--mark-blue) 14%, transparent);
+  flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0;
+  position: relative; background: var(--canvas-bg);
+}
+
+/* The board fills the page; dock and chat overlay it, so neither takes width. */
+.canvas-page.is-docked > .canvas-wb { flex: 1; min-height: 0; }
+
+.canvas-float-btn {
+  padding: 4px 10px; border-radius: 9999px; font: inherit; font-size: 11px;
+  background: var(--bg); border: 1px solid var(--border-soft); color: var(--fg-2); cursor: pointer;
+  white-space: nowrap;
+}
+.canvas-float-btn:hover { border-color: var(--fg); color: var(--fg); }
+
+/* ── conversation: glass card at the top left, under the top bar ─────────── */
+.canvas-chat {
+  position: absolute; top: 72px; left: 16px; z-index: 24;
+  width: min(340px, calc(100% - 32px));
+  display: flex; flex-direction: column;
+  border-radius: 16px; overflow: hidden;
+  border: 1px solid color-mix(in oklab, var(--border-soft) 70%, transparent);
+  background: color-mix(in oklab, var(--bg) 62%, transparent);
+  backdrop-filter: blur(18px) saturate(120%);
+  box-shadow: 0 12px 36px color-mix(in oklab, var(--fg) 10%, transparent);
+}
+.canvas-chat-head {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 9px 12px; border: none; background: transparent; cursor: pointer;
+  font: inherit; font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--muted); text-align: left;
+}
+.canvas-chat-head:hover { color: var(--fg-2); }
+.canvas-chat-title { flex: 1; }
+.canvas-chat-caret { font-size: 13px; line-height: 1; color: var(--meta); }
+.canvas-chat-live {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+  animation: canvas-chat-pulse 1.4s ease-in-out infinite;
+}
+@keyframes canvas-chat-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+.canvas-chat-body {
+  max-height: min(46vh, 420px); overflow-y: auto;
+  padding: 0 12px 12px; display: flex; flex-direction: column; gap: 12px;
+  border-top: 1px solid color-mix(in oklab, var(--border-soft) 60%, transparent);
+}
+.canvas-chat-empty { margin: 10px 0 0; font-size: 12px; line-height: 1.65; color: var(--meta); }
+
+.canvas-turn { display: flex; flex-direction: column; gap: 4px; }
+.canvas-turn:first-child { margin-top: 10px; }
+.canvas-turn > .msg-user {
+  align-self: flex-end; max-width: 90%;
+  padding: 6px 11px; border-radius: 13px;
+  background: color-mix(in oklab, var(--fg) 8%, transparent);
+  font-size: 12.5px; line-height: 1.5; color: var(--fg);
+}
+.canvas-turn-line { margin: 0; font-size: 12px; line-height: 1.55; color: var(--fg-2); }
+.canvas-turn-line.is-done { color: var(--accent); }
+.canvas-turn-line.is-fail { color: var(--danger, #b4442f); }
+.canvas-turn-line.is-live { color: var(--muted); }
+.canvas-turn-cost { margin-left: 6px; color: var(--meta); font-size: 10.5px; }
+
+/* ── the composer: bottom centre, floating over the board ────────────────── */
+.canvas-dock {
+  position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%);
+  z-index: 22; width: min(680px, calc(100% - 48px));
+  display: flex; flex-direction: column; gap: 10px;
+}
+/* Board padding, so the composer never hides a screen when the board is fitted to the window. */
+.canvas-page.is-docked .canvas-wb-surface { padding-bottom: 40px; }
+.canvas-page.is-empty { justify-content: center; align-items: center; }
+.canvas-page.is-empty .canvas-dock { position: static; transform: none; }
+.canvas-dock.is-centered { width: min(620px, 100%); padding: 24px; }
+
+.canvas-dock-intro h1 { margin: 0 0 8px; font-size: 20px; font-weight: 600; }
+.canvas-dock-intro p { margin: 0 0 16px; font-size: 13px; line-height: 1.7; color: var(--muted); }
+.canvas-page.is-empty .canvas-dock-intro { text-align: center; }
+
+/* Prompt dock, independent of the Image Agent composer. Send and Stop share one button. */
+.canvas-composer {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  background: color-mix(in oklab, var(--bg) 88%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 32px color-mix(in oklab, var(--fg) 12%, transparent);
+}
+.canvas-composer .composer-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.canvas-composer .file-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px;
+  border-radius: 9999px; background: var(--surface); font-size: 11px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--muted);
+}
+.canvas-composer textarea {
+  width: 100%; border: none; resize: none; font: inherit; font-size: 15px; line-height: 1.5;
+  min-height: 44px; max-height: 120px; background: transparent; color: var(--fg); padding: 6px 2px;
+}
+.canvas-composer textarea:focus { outline: none; }
+.canvas-composer textarea::placeholder { color: var(--muted); }
+.canvas-composer .composer-toolbar {
+  display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+}
+.canvas-composer .composer-send {
+  min-height: 36px; padding: 0 16px; border: none; border-radius: 9999px;
+  background: var(--fg); color: var(--bg); font: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+.canvas-composer .composer-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.canvas-composer .composer-send.is-stop { background: var(--fg); }
+.canvas-composer .composer-send.is-stop:hover { background: var(--danger, #b4442f); color: #fff; }
+
+.canvas-wb {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0;
+  position: relative; background: var(--canvas-bg);
+}
+.canvas-wb-bar {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 18; height: 64px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 0 16px; border-bottom: none; pointer-events: none;
+  background: linear-gradient(180deg,
+    color-mix(in oklab, var(--bg) 94%, transparent) 0%,
+    color-mix(in oklab, var(--bg) 55%, transparent) 58%,
+    transparent 100%);
+}
+.canvas-wb-bar > * { pointer-events: auto; }
+.canvas-wb-title { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.canvas-wb-tag {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--muted); background: var(--surface); border-radius: 9999px; padding: 2px 8px;
+}
+.canvas-wb-versions { display: flex; gap: 6px; overflow-x: auto; }
+.canvas-wb-version {
+  flex-shrink: 0; border: 1px solid var(--border); background: var(--bg); color: var(--fg-2);
+  border-radius: 9999px; padding: 4px 10px; font: inherit; font-size: 11px; cursor: pointer;
+}
+.canvas-wb-version:hover { border-color: var(--fg); }
+.canvas-wb-version.is-current { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.canvas-wb-actions { display: flex; align-items: center; gap: 6px; margin-left: auto; flex-shrink: 0; }
+
+.canvas-wb-body { flex: 1; min-height: 0; display: flex; }
+
+/* ── the surface: a pannable, zoomable world ─────────────────────────────── */
+.canvas-wb-surface {
+  flex: 1; min-width: 0; min-height: 0; position: relative; overflow: hidden;
+  cursor: grab;
+  background-color: var(--canvas-bg);
+  background-image: radial-gradient(circle, var(--canvas-dot) 1px, transparent 1px);
+  background-size: 20px 20px;
+  touch-action: none;
+}
+.canvas-wb-surface.is-panning { cursor: grabbing; }
+.canvas-wb-world { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.canvas-wb-bounds {
+  position: absolute; border-radius: 10px; pointer-events: none;
+  background: color-mix(in oklab, var(--bg) 35%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--border) 70%, transparent);
+}
+.canvas-wb-edges, .canvas-wb-refs { position: absolute; pointer-events: none; overflow: visible; }
+.canvas-edge {
+  fill: none; stroke: color-mix(in oklab, var(--fg) 45%, transparent);
+  stroke-width: 2; stroke-dasharray: 7 5;
+}
+.canvas-edge-dot { fill: var(--accent); }
+.canvas-edge-label {
+  font-size: 12px; fill: var(--fg-2);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+.canvas-ref-line {
+  fill: none; stroke: var(--accent); stroke-width: 2;
+  stroke-dasharray: 6 6;
+}
+.canvas-ref-label {
+  font-size: 12px; fill: var(--accent); font-weight: 600;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+.canvas-wb-hollow {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  margin: 0; font-size: 13px; color: var(--meta); pointer-events: none;
+}
+.canvas-wb-zoom {
+  position: absolute; right: 16px; bottom: 108px; left: auto; z-index: 12;
+  display: flex; align-items: center; gap: 4px; padding: 4px;
+  border-radius: 999px; border: 1px solid var(--border-soft);
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px color-mix(in oklab, var(--fg) 8%, transparent);
+  font-size: 11px;
+}
+.canvas-wb-zoom button {
+  border: none; background: transparent; font: inherit; font-size: 13px;
+  width: 26px; height: 26px; border-radius: 7px; cursor: pointer; color: var(--fg-2);
+}
+.canvas-wb-zoom button:hover { background: var(--surface-warm); }
+.canvas-wb-zoom span { min-width: 38px; text-align: center; color: var(--muted); }
+.canvas-wb-notes {
+  position: absolute; right: 16px; bottom: 16px; z-index: 5; margin: 0; padding: 8px 12px;
+  list-style: none; font-size: 11px; color: var(--muted); max-width: 320px;
+  background: color-mix(in oklab, var(--bg) 92%, transparent); border-radius: 10px;
+  border: 1px solid var(--border-soft);
+}
+
+/* ── a screen: the card that holds modules ───────────────────────────────── */
+.canvas-screen {
+  position: absolute;
+  /* The header sits just above the card, so the card itself must not clip it. Only the body
+     is clipped: its modules may touch the edge but must not spill over the neighbour. */
+  overflow: visible;
+  box-shadow: 0 18px 50px color-mix(in oklab, var(--fg) 14%, transparent);
+  outline: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
+  outline-offset: 0;
+}
+.canvas-screen.is-selected { outline: 2px solid var(--mark-blue); }
+.canvas-screen-head {
+  position: absolute; left: 0; right: 0; bottom: 100%; z-index: 3;
+  display: flex; align-items: center; gap: 6px; padding: 4px 8px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--meta); cursor: grab; user-select: none;
+  background: color-mix(in oklab, var(--bg) 72%, transparent);
+  backdrop-filter: blur(6px);
+  border-radius: 6px 6px 0 0;
+}
+.canvas-screen.is-selected .canvas-screen-head { color: var(--mark-blue); }
+.canvas-screen-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.canvas-screen-variant {
+  font-size: 9px; padding: 1px 6px; border-radius: 9999px;
+  background: color-mix(in oklab, var(--accent) 16%, transparent); color: var(--accent);
+  text-transform: none; letter-spacing: 0;
+}
+.canvas-screen-keep {
+  font: inherit; font-size: 9px; padding: 1px 7px; border-radius: 9999px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--fg-2);
+  cursor: pointer; text-transform: none; letter-spacing: 0;
+}
+.canvas-screen-keep:hover { border-color: var(--fg); }
+.canvas-screen-body { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; }
+
+/* ── a module inside a screen ────────────────────────────────────────────── */
+.canvas-module {
+  position: absolute; touch-action: none; cursor: grab;
+  border: 1px solid transparent; border-radius: 4px; overflow: hidden;
+}
+.canvas-module.is-text { display: flex; align-items: flex-start; }
+.canvas-module.is-image { display: grid; place-items: center; }
+.canvas-module:not(.is-readonly):hover { border-color: color-mix(in oklab, var(--mark-blue) 45%, transparent); }
+.canvas-module.is-selected {
+  border-color: var(--mark-blue);
+  box-shadow: 0 0 0 3px var(--mark-blue-soft);
+}
+.canvas-module.is-readonly { cursor: default; }
+.canvas-text {
+  width: 100%; line-height: 1.32; white-space: pre-wrap; word-break: break-word;
+}
+.canvas-img { width: 100%; height: 100%; display: block; pointer-events: none; }
+
+/* A picture that has not been drawn yet: a placeholder card that shows what will fill it. */
+.canvas-img.is-pending {
+  display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+  padding: 12px; box-sizing: border-box; border-radius: 8px;
+  border: 1px dashed color-mix(in oklab, var(--mark-blue) 45%, var(--border));
+  background:
+    linear-gradient(135deg,
+      color-mix(in oklab, var(--mark-blue) 7%, transparent),
+      color-mix(in oklab, var(--mark-blue) 2%, transparent));
+  color: var(--muted);
+}
+.canvas-img.is-pending.is-working {
+  border-style: solid;
+  border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+  animation: canvas-pending 1.6s ease-in-out infinite;
+}
+@keyframes canvas-pending { 0%, 100% { opacity: 1; } 50% { opacity: 0.62; } }
+.canvas-img-badge {
+  align-self: flex-start; font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 2px 8px; border-radius: 9999px;
+  background: color-mix(in oklab, var(--bg) 80%, transparent);
+  border: 1px solid color-mix(in oklab, var(--mark-blue) 30%, transparent);
+  color: var(--fg-2);
+}
+.canvas-img.is-working .canvas-img-badge {
+  border-color: color-mix(in oklab, var(--accent) 45%, transparent);
+  color: var(--accent);
+}
+.canvas-img-prompt {
+  font-size: 12px; line-height: 1.5; color: var(--meta);
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+/* A finished picture keeps its prompt on the card, so it can be reproduced without opening the inspector. */
+.canvas-img-meta {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 18px 10px 8px;
+  background: linear-gradient(to top, color-mix(in oklab, var(--fg) 72%, transparent), transparent);
+  color: var(--bg); font-size: 12px; line-height: 1.45;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  pointer-events: none;
+}
+.canvas-img-meta-k {
+  display: block; font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+  opacity: 0.85; margin-bottom: 2px;
+}
+.canvas-handle {
+  position: absolute; width: 12px; height: 12px; border-radius: 3px;
+  background: var(--bg); border: 2px solid var(--mark-blue);
+}
+.canvas-handle.se { right: -6px; bottom: -6px; cursor: nwse-resize; }
+.canvas-handle.nw { left: -6px; top: -6px; cursor: nwse-resize; }
+.canvas-module-flag {
+  position: absolute; right: 6px; top: 6px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+/* ── the inspector: a floating card, only when something is selected ─────── */
+.canvas-wb-body { position: relative; }
+.canvas-wb-inspector {
+  position: absolute; top: 72px; right: 16px; z-index: 24;
+  width: 260px; max-height: calc(100% - 24px); overflow-y: auto;
+  padding: 14px; display: flex; flex-direction: column; gap: 12px;
+  border-radius: 14px; border: 1px solid var(--border-soft);
+  background: color-mix(in oklab, var(--bg) 94%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 36px color-mix(in oklab, var(--fg) 12%, transparent);
+}
+.canvas-wb-inspector[data-open="false"] { display: none; }
+.canvas-wb-inspector h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.canvas-wb-meta { margin: 0; font-size: 11px; color: var(--muted); }
+.canvas-wb-hint, .canvas-wb-note { margin: 0; font-size: 12px; line-height: 1.6; color: var(--meta); }
+.canvas-wb-field { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--muted); }
+.canvas-wb-field textarea, .canvas-wb-field input, .canvas-wb-field select,
+.canvas-wb-links select {
+  font: inherit; font-size: 13px; color: var(--fg); padding: 8px 10px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg);
+  resize: vertical;
+}
+.canvas-wb-links { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--muted); }
+
+/* Project list shown before a canvas is opened. Lives in the normal shell, not the workspace. */
+.canvas-home h1 { margin: 0 0 8px; font-size: 22px; font-weight: 600; }
+.canvas-home-h { margin: 22px 0 0; font-size: 13px; font-weight: 600; color: var(--muted); }
+.canvas-projects {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px; margin-top: 18px;
+}
+.canvas-project {
+  text-align: left; font: inherit; color: inherit; background: var(--bg);
+  border: 1px solid var(--border-soft); border-radius: 14px; cursor: pointer; padding: 14px;
+}
+.canvas-project:hover { border-color: var(--border); }
+.canvas-project h3 { margin: 8px 0 4px; font-size: 15px; }
+.canvas-project p { margin: 0; font-size: 12px; color: var(--muted); line-height: 1.5; }
+.canvas-project.is-new { border-style: dashed; background: transparent; }
+.canvas-project:disabled { opacity: 0.6; cursor: wait; }

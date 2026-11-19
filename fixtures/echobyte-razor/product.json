@@ -1,0 +1,112 @@
+{
+  "source": "Amazon.sg product page saved as HTML (source.html)",
+  "marketplace": "amazon.sg",
+  "currency_note": "price not captured in saved HTML",
+  "brand": "EchoByte",
+  "category_path": [
+    "Beauty",
+    "Shaving and Hair Removal",
+    "Electric Shavers",
+    "Men's"
+  ],
+  "rating": {
+    "stars": 4.5,
+    "ratings": 64
+  },
+  "listing": {
+    "title": "Electric Razor for Men, Full Metal Foil Shaver with 4 Floating Blades, IPX7 Waterproof Wet/Dry, 120-Min Runtime USB-C Rechargeable Travel Groomer with LED Display & Lock",
+    "title_length": 169,
+    "bullets": [
+      {
+        "index": 1,
+        "text": "[CLOSE SHAVE WITHOUT THE PULLING] Engineered with 4 floating blades (3 ultra-thin foils and 1 specialized trimmer), this electric razor captures flat-lying stubble in a single pass. It smoothly adapts to your facial contours to deliver a clean, close shave—saving your morning time and saving your skin from painful pulling or razor burn.",
+        "length": 338
+      },
+      {
+        "index": 2,
+        "text": "[HEAVY-DUTY METAL BUILD& WHISPER QUIET] Upgrade from flimsy, rattling plastic shavers. The EchoByte features a solid, weighted metal casing that not only feels incredibly durable in your hand but naturally absorbs motor vibrations. You get a remarkably stable grip and a quiet shave that won’t wake up the rest of the house.",
+        "length": 324
+      },
+      {
+        "index": 3,
+        "text": "[120-MIN RUNTIME & SMART LED] One less device you have to worry about charging every day. A single USB-C charge delivers up to 2 hours of continuous cordless power. The clear LED screen shows your exact battery percentage, and if you’re ever caught off guard, a quick 5-minute plug-in is all you need for a full shave.",
+        "length": 318
+      },
+      {
+        "index": 4,
+        "text": "[IPX7 WATERPROOF & ZERO-FUSS CLEANING] 100% waterproof for a quick dry shave on the go or a comfortable wet shave in the shower. We know you hate tedious cleaning, so we made it easy: the magnetic shaver head pops off instantly, letting you flush trapped hair directly under the faucet in seconds.",
+        "length": 297
+      },
+      {
+        "index": 5,
+        "text": "[POCKET-SIZED WITH SECURE TRAVEL LOCK] Smaller than your smartphone, this mini groomer fits perfectly into any gym bag or carry-on luggage. Just hold the power button to engage the smart Travel Lock, ensuring it never turns on accidentally and drains the battery in transit. A rugged, reliable tool built for men on the move.",
+        "length": 325
+      }
+    ],
+    "description": null,
+    "description_note": "productDescription empty; page has A+ module (aplus_feature_div) and brand snapshot",
+    "search_terms": null
+  },
+  "attributes": {
+    "Brand": "EchoByte",
+    "Recommended product uses": "Mustache",
+    "Special features": "IPX7 Waterproof、4-Blade Foil Close Shave、Full Metal、USB-C Charge、Cordless 120min Runtime、Portable、Travel Lock",
+    "Power source": "Battery Powered",
+    "Included components": "USB-C Charging Cable, User Manual, Travel Pouch, Cleaning Brush",
+    "Battery life": "120 minutes",
+    "Colour": "Gunmetal Grey",
+    "Head type": "Foil",
+    "Battery description": "Rechargeable",
+    "Number of blades": "4"
+  },
+  "images": [
+    {
+      "slot": "main_image",
+      "file": "images/main.jpg",
+      "observed": "main"
+    },
+    {
+      "slot": "secondary_image[1]",
+      "file": "images/pt01.jpg",
+      "observed": "infographic: solid metal body, close-up insets"
+    },
+    {
+      "slot": "secondary_image[2]",
+      "file": "images/pt02.jpg",
+      "observed": "infographic: 3D floating foils, 3 numbered insets, big stat"
+    },
+    {
+      "slot": "secondary_image[3]",
+      "file": "images/pt03.jpg",
+      "observed": "infographic+lifestyle: IPX7 waterproof, wet/dry insets"
+    },
+    {
+      "slot": "secondary_image[4]",
+      "file": "images/pt04.jpg",
+      "observed": "infographic: 4-blade system, 4 numbered feature pills with exploded blade view"
+    },
+    {
+      "slot": "secondary_image[5]",
+      "file": "images/pt05.jpg",
+      "observed": "infographic+lifestyle: 120 min runtime, 3 charging scenes"
+    },
+    {
+      "slot": "secondary_image[6]",
+      "file": "images/pt06.jpg",
+      "observed": "lifestyle+size: travel lock, dimensions vs AirPods case"
+    },
+    {
+      "slot": "secondary_image[7]",
+      "file": "images/pt07.jpg",
+      "observed": "infographic: package contents, gift ready"
+    }
+  ],
+  "observations": [
+    "bullets use [ALL CAPS HEADER] prefix, each about 300-340 chars",
+    "title is 169 chars",
+    "secondary images are designed infographics: headline, subhead, numbered callouts, inset photos, large stat, with text baked in",
+    "main image: product centered on white, fills most of the frame",
+    "one secondary image shows a typo-like number (10,0000 CPM vs 100000 CPM) which shows text-in-image consistency is a real risk",
+    "all 7 secondary images share one dark and gold visual system (same fonts, colors, pill and inset shapes), so a theme field is natural"
+  ]
+}

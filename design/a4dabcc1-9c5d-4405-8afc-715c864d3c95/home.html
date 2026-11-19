@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="电商 AI 全流程闭环平台 — Agent 对话生产 PDP、主图与画布工件，商品资产与自动化任务一体化。" />
+  <title>电商 AI 全流程闭环平台 · Home</title>
+  <style>
+:root {
+  --bg: #ffffff;
+  --surface: #f5f5f5;
+  --surface-warm: #fafafa;
+  --fg: #0d0d0d;
+  --muted: #6e6e6e;
+  --border: #e5e5e5;
+  --border-soft: #ededed;
+  --accent: #10a37f;
+  --accent-on: #ffffff;
+  --font-display: "Signifier", "Source Serif Pro", Georgia, serif;
+  --font-body: "Söhne", "Inter", system-ui, sans-serif;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --container-max: 1120px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font-body); background: var(--bg); color: var(--fg); line-height: 1.65; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: var(--container-max); margin: 0 auto; padding: 0 48px; }
+.topnav { border-bottom: 1px solid var(--border); position: sticky; top: 0; background: color-mix(in oklab, var(--bg) 94%, transparent); backdrop-filter: blur(10px); z-index: 5; }
+.topnav-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+.logo { font-family: var(--font-display); font-size: 20px; letter-spacing: -0.02em; }
+.nav-links { display: flex; gap: 24px; font-size: 14px; color: var(--muted); }
+.nav-links a:hover { color: var(--fg); }
+.btn { display: inline-flex; align-items: center; padding: 10px 18px; font-size: 14px; font-weight: 500; border-radius: var(--radius-sm); border: 1px solid transparent; cursor: pointer; font-family: inherit; }
+.btn-primary { background: var(--fg); color: var(--accent-on); }
+.btn-primary:hover { background: #1a1a1a; }
+.btn-secondary { background: var(--bg); border-color: var(--border); }
+.btn-secondary:hover { background: var(--surface-warm); }
+section { padding: 80px 0; border-top: 1px solid var(--border); }
+section:first-of-type { border-top: none; padding-top: 64px; }
+.display { font-family: var(--font-display); font-size: clamp(40px, 5vw, 56px); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 20px; font-weight: 400; max-width: 14ch; }
+.lead { font-size: 18px; color: var(--muted); max-width: 52ch; margin: 0 0 28px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.card { padding: 24px; border: 1px solid var(--border-soft); border-radius: var(--radius-md); }
+.card h2 { font-size: 16px; margin: 0 0 8px; }
+.card p { margin: 0; font-size: 14px; color: var(--muted); }
+.case { padding: 16px 20px; border: 1px solid var(--border-soft); border-radius: var(--radius-sm); margin-bottom: 10px; display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.case span { color: var(--muted); }
+.doc-list { display: flex; flex-wrap: wrap; gap: 10px; }
+.doc-list a { padding: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; }
+.doc-list a:hover { background: var(--surface-warm); }
+footer { padding: 48px 0; font-size: 13px; color: var(--muted); border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <header class="topnav" data-od-id="home-topnav">
+    <div class="container topnav-inner">
+      <a class="logo" href="home.html" data-od-id="home-logo">电商 AI 闭环</a>
+      <nav class="nav-links" aria-label="站点导航">
+        <a href="#modules">产品能力</a>
+        <a href="#cases">客户案例</a>
+        <a href="#docs-quickstart">文档</a>
+      </nav>
+      <a class="btn btn-primary" href="workbench.html" data-od-id="home-cta-workbench">进入工作台</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="container" data-od-id="home-hero">
+      <h1 class="display">对 PDP 的某一槽位提意见，得到可回溯的新版本</h1>
+      <p class="lead">面向亚马逊运营：点预览里的主图、标题或某条五点，说一句话，Agent 把它变成参数差或一条持续约束，每次修改都是新版本，规则检查自动运行。邀请内测阶段。</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a class="btn btn-primary" href="workbench.html">快速开始</a>
+        <a class="btn btn-secondary" href="canvas-studio.html">A+ 画布（后期示意）</a>
+      </div>
+    </section>
+
+    <section class="container" id="modules" data-od-id="home-modules">
+      <h2 class="display" style="font-size:32px;max-width:none">功能模块</h2>
+      <div class="grid-3" style="margin-top:32px">
+        <div class="card" data-od-id="mod-agent"><h2>改某一个槽位</h2><p>点预览里的区域再说话，只改那个槽位。</p></div>
+        <div class="card" data-od-id="mod-auto"><h2>检查与对比</h2><p>规则检查自动运行，没有分数；导入基线能看到提升了什么。</p></div>
+        <div class="card" data-od-id="mod-assets"><h2>商品与事实</h2><p>Agent 只使用商品事实和你补充的事实。</p></div>
+        <div class="card" data-od-id="mod-tools"><h2>Tool 与 Skill</h2><p>管理员只读查看登记元数据与 SKILL.md。</p></div>
+        <div class="card" data-od-id="mod-skills"><h2>导入已有 Listing</h2><p>导入的内容是第一版，再优化。</p></div>
+        <div class="card" data-od-id="mod-canvas"><h2>后期：A+ 画布</h2><p>MVP 不做，只有交互示意。</p></div>
+      </div>
+    </section>
+
+    <section class="container" id="cases" data-od-id="home-cases">
+      <h2 class="display" style="font-size:32px;max-width:none">案例展示</h2>
+      <div style="margin-top:24px">
+        <div class="case" data-od-id="case-1"><strong>EchoByte 电动剃须刀</strong><span>从零生成 · 主图 v2 · 颜色约束待确认</span></div>
+        <div class="case" data-od-id="case-2"><strong>NKTMXY 迷你电动剃须刀</strong><span>导入基线 · 3 项基线问题 · 五点语法已改</span></div>
+      </div>
+    </section>
+
+    <section class="container" id="docs-quickstart" data-od-id="home-docs">
+      <h2 class="display" style="font-size:32px;max-width:none">帮助文档</h2>
+      <p class="lead" style="margin-top:12px">公开文档入口（原型占位链接）。</p>
+      <div class="doc-list">
+        <a href="#docs-quickstart" id="docs-agent">Agent 使用指南</a>
+        <a href="#docs-compliance">亚马逊合规说明</a>
+        <a href="#docs-api">开放平台 API</a>
+        <a href="workbench.html">工作台内 Home 视图</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container" data-od-id="home-footer">
+    电商 AI · 样例数据：EchoByte、NKTMXY 真实 Listing
+  </footer>
+</body>
+</html>

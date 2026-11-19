@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "html",
+  "title": "canvas-studio.html",
+  "entry": "canvas-studio.html",
+  "renderer": "html",
+  "status": "complete",
+  "exports": [
+    "html",
+    "pdf",
+    "zip"
+  ],
+  "createdAt": "2026-10-21T03:50:56.111Z",
+  "updatedAt": "2026-10-22T06:01:44.885Z",
+  "metadata": {
+    "inferred": true,
+    "reconciled": true
+  }
+}

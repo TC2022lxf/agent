@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>电商 AI 全流程闭环平台</title>
+  <style>
+:root {
+  --bg: #ffffff;
+  --surface: #f5f5f5;
+  --surface-warm: #fafafa;
+  --fg: #0d0d0d;
+  --fg-2: #1a1a1a;
+  --muted: #6e6e6e;
+  --border: #e5e5e5;
+  --border-soft: #ededed;
+  --accent: #10a37f;
+  --accent-on: #ffffff;
+  --accent-hover: #0a7a5e;
+  --font-display: "Signifier", "Source Serif Pro", Georgia, serif;
+  --font-body: "Söhne", "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, Menlo, monospace;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --container-max: 1120px;
+  --section-y: 96px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; font-family: var(--font-body); background: var(--bg); color: var(--fg); line-height: 1.65; }
+a { color: inherit; text-decoration: none; }
+.container { max-width: var(--container-max); margin: 0 auto; padding: 0 48px; }
+.topnav {
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 10;
+}
+.topnav-inner { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+.logo { font-family: var(--font-display); font-size: 20px; letter-spacing: -0.02em; }
+.nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--muted); }
+.nav-links a:hover { color: var(--fg); }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; font-size: 15px; font-weight: 500;
+  border-radius: var(--radius-sm); border: 1px solid transparent; cursor: pointer;
+}
+.btn-primary { background: var(--fg); color: var(--accent-on); }
+.btn-primary:hover { background: var(--fg-2); }
+.btn-secondary { background: var(--bg); border-color: var(--border); color: var(--fg); }
+.btn-secondary:hover { background: var(--surface-warm); }
+section { padding: var(--section-y) 0; }
+section + section { border-top: 1px solid var(--border); }
+.display {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5vw, 56px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0 0 24px;
+  font-weight: 400;
+  max-width: 16ch;
+}
+.lead { font-size: 18px; color: var(--muted); max-width: 48ch; margin: 0 0 32px; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.mock-frame {
+  margin-top: 56px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface-warm);
+  box-shadow: 0 24px 64px color-mix(in oklab, var(--fg) 8%, transparent);
+}
+.mock-chrome {
+  height: 36px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 6px;
+}
+.mock-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.mock-body {
+  aspect-ratio: 16 / 9;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1px;
+  background-color: var(--border-soft);
+}
+.mock-side { background: var(--surface-warm); }
+.mock-chat {
+  background: var(--bg);
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mock-bubble {
+  height: 48px;
+  max-width: 70%;
+  border-radius: 12px;
+  background: var(--surface-warm);
+  border: 1px solid var(--border-soft);
+}
+.mock-bubble.ai { max-width: 85%; height: 72px; }
+.mock-cards { display: flex; gap: 8px; margin-top: 4px; }
+.mock-mini {
+  flex: 1;
+  height: 56px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: var(--bg);
+}
+.h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  margin: 0 0 40px;
+  font-weight: 400;
+}
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+@media (max-width: 920px) {
+  .grid-3 { grid-template-columns: 1fr; }
+  .container { padding: 0 24px; }
+  .nav-links { display: none; }
+  .mock-body { grid-template-columns: 1fr; }
+}
+.card {
+  padding: 28px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+.card h3 { font-size: 18px; font-weight: 600; margin: 0 0 10px; }
+.card p { margin: 0; font-size: 15px; color: var(--muted); }
+.cta-box { text-align: center; max-width: 560px; margin: 0 auto; }
+.cta-box .display { max-width: none; font-size: 40px; }
+.pagefoot { padding: 48px 0; color: var(--muted); font-size: 13px; text-align: center; }
+  </style>
+</head>
+<body>
+  <header class="topnav" data-od-id="landing-nav">
+    <div class="container topnav-inner">
+      <div class="logo" data-od-id="landing-logo">电商 AI 闭环</div>
+      <nav class="nav-links" aria-label="主导航">
+        <a href="#features">能力</a>
+        <a href="#workflow">工作流</a>
+      </nav>
+      <a class="btn btn-primary" href="workbench.html" data-od-id="landing-cta-nav">进入工作台</a>
+    </div>
+  </header>
+
+  <main>
+    <section data-od-id="landing-hero">
+      <div class="container">
+        <h1 class="display" data-od-id="landing-headline">对话驱动生产，工件随时可审。</h1>
+        <p class="lead">亚马逊 PDP 工作台：主体是作品，不是对话。点预览里的槽位再说话，每次修改都是可回溯的新版本；聊天里的成果卡片打开右侧工作台，主图可以聚焦圈选。</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="workbench.html" data-od-id="landing-cta-primary">预览交互原型</a>
+          <a class="btn btn-secondary" href="index.html" data-od-id="landing-cta-secondary">返回入口页</a>
+        </div>
+        <div class="mock-frame" data-od-id="landing-mockup" aria-hidden="true">
+          <div class="mock-chrome"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span></div>
+          <div class="mock-body">
+            <div class="mock-side"></div>
+            <div class="mock-chat">
+              <div class="mock-bubble ai"></div>
+              <div class="mock-cards"><div class="mock-mini"></div><div class="mock-mini"></div></div>
+              <div class="mock-bubble" style="align-self:flex-end;width:55%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" data-od-id="landing-features">
+      <div class="container">
+        <h2 class="h2">为跨境运营与品牌团队设计</h2>
+        <div class="grid-3">
+          <article class="card" data-od-id="feature-chat">
+            <h3>Agent 优先</h3>
+            <p>主界面是对话流，产物以卡片形式回传，无需离开会话即可点开详情。</p>
+          </article>
+          <article class="card" data-od-id="feature-compliance">
+            <h3>检查而不是打分</h3>
+            <p>规则检查自动运行，通过或不通过一目了然；主观好坏交给你接受或拒绝，不给“转化潜力”分数。</p>
+          </article>
+          <article class="card" data-od-id="feature-artifacts">
+            <h3>槽位与版本</h3>
+            <p>主图、标题、五点各有版本树；改一个槽位不会覆盖其他槽位。A+ 画布后期开放。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="workflow" data-od-id="landing-cta-section">
+      <div class="container cta-box">
+        <h2 class="display">从一句话到可上架商品。</h2>
+        <p class="lead" style="margin-inline:auto;">桌面 1440px 高保真原型，内置 EchoByte 与 NKTMXY 两份真实 Listing：从零生成、导入优化、版本对比、约束确认。</p>
+        <a class="btn btn-primary" href="workbench.html" data-od-id="landing-cta-bottom">打开工作台</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pagefoot container" data-od-id="landing-footer">
+    电商 AI 全流程闭环平台 · OpenAI 设计体系视觉
+  </footer>
+</body>
+</html>

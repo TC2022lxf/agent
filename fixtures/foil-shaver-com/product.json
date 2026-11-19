@@ -1,0 +1,107 @@
+{
+  "source": "Amazon product page saved as HTML (source.html)",
+  "brand": "NKTMXY",
+  "category_path": [
+    "Beauty & Personal Care",
+    "Shave & Hair Removal",
+    "Men's",
+    "Electric Shavers",
+    "Foil Shavers"
+  ],
+  "rating": {
+    "stars": 4.3,
+    "ratings": "3915"
+  },
+  "price_text": "$61.99",
+  "listing": {
+    "title": "Electric Foil Shavers for Men: 4 Floating Blades & Big LED Display",
+    "title_length": 66,
+    "bullets": [
+      {
+        "index": 1,
+        "text": "4-Blade Floating Precision: Engineered with 4 independent floating blades, the foil shavers for men contour to the jaw, chin, and neck in a single pass, capturing flat-lying hairs that fixed-heads miss. Each flexes for consistent skin contact",
+        "length": 242
+      },
+      {
+        "index": 2,
+        "text": "IPX7 Waterproof: The shaver is perfectly at home in a steamy shower or on a bathroom counter. Designed as a versatile electric razor for men, the unit transitions effortlessly between wet and dry use, and the sealed body rinses clean under running water",
+        "length": 253
+      },
+      {
+        "index": 3,
+        "text": "Compact Travel Ready: Charging via the universal USB-C port - One cable powers the shaver alongside phones and laptops. The palm-sized body fits a toiletry bag or carry-on. Your mini electric shaver includes a protective cap that shields for transit",
+        "length": 249
+      },
+      {
+        "index": 4,
+        "text": "LED Display & Dual Speed: A built-in LED screen displays remaining battery level at a glance, preventing mid-shave power loss. This electric shaver paired with 2 selectable speed modes, the lower for sensitive skin, while the higher for thicker growth",
+        "length": 251
+      },
+      {
+        "index": 5,
+        "text": "Thoughtful Gift Grooming Essential: This electric razor ready to use straight from the box with intuitive one-button operation. The compact make it a practical choice for birthdays or Father's Day, delivered as a thoughtful self-contained solution",
+        "length": 247
+      }
+    ],
+    "description": null,
+    "search_terms": null
+  },
+  "attributes": {
+    "Brand": "NKTMXY",
+    "Number of blades": "4",
+    "Head type": "Foil",
+    "Special features": "IPX7 waterproof, wet and dry use, USB-C charging, LED battery display, 2 speed modes, travel cap",
+    "Power source": "Battery Powered",
+    "Charging": "USB-C",
+    "Battery display": "LED screen showing remaining battery",
+    "Speed modes": "2 (lower for sensitive skin, higher for thicker growth)",
+    "Recommended product uses": "Face, jaw, chin, neck"
+  },
+  "images": [
+    {
+      "slot": "main_image",
+      "file": "images/main.jpg",
+      "observed": "composite on white: retail box, several product views, cable, brush and cap in one frame. This is not a single-product main image and may not meet the main-image rules for amazon.com (to be checked). Good example of an imported baseline with a problem"
+    },
+    {
+      "slot": "secondary_image[1]",
+      "file": "images/pt01.jpg",
+      "observed": "photo + overlay text: 'UPGRADE 4D STEEL FLEX HEADS', two small icon badges"
+    },
+    {
+      "slot": "secondary_image[2]",
+      "file": "images/pt02.jpg",
+      "observed": "infographic: 'ADVANCED 4 BLADE SHAVING SYSTEM', two labeled callouts, exploded blade view"
+    },
+    {
+      "slot": "secondary_image[3]",
+      "file": "images/pt03.jpg",
+      "observed": "photo + overlay: '2 GEARS', two gear labels, model photo"
+    },
+    {
+      "slot": "secondary_image[4]",
+      "file": "images/pt04.jpg",
+      "observed": "closeup + overlay: 'LARGER LED DISPLAY', three small feature icons"
+    },
+    {
+      "slot": "secondary_image[5]",
+      "file": "images/pt05.jpg",
+      "observed": "lifestyle + overlay: 'SHAVING WITH ONE HAND', three icon facts (90 mins, 5 mins boost, USB-C)"
+    },
+    {
+      "slot": "secondary_image[6]",
+      "file": "images/pt06.jpg",
+      "observed": "lifestyle + overlay: 'IPX7 WATERPROOF', foam and water scene, badge"
+    }
+  ],
+  "observations": [
+    "title is only 66 chars (the other fixture has 169), so title-length handling must work at both ends",
+    "bullets are about 250 chars each with a 'Title Case Phrase:' lead-in (the other fixture uses [ALL CAPS HEADER])",
+    "all images are 1:1 (800x800) here, while the other fixture's secondary images are 4:5 portrait. So an infographic layout spec needs an aspect_ratio field",
+    "secondary images are photo + overlay text with inconsistent visual style, less uniform than the other fixture",
+    "description is empty in the saved HTML",
+    "price $61.99, 4.3 stars, 3915 ratings; category Foil Shavers"
+  ],
+  "marketplace": "amazon.com",
+  "attributes_source": "Read from the saved listing copy (bullets 1-5); the saved HTML has no attribute table."
+}

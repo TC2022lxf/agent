@@ -1,0 +1,15 @@
+{
+  "id": "amazon_com",
+  "version": "0.1-unverified",
+  "note": "Numbers are placeholders pending the check recorded in docs/STATUS.md (amazon.com rules).",
+  "title": { "max_chars": 200 },
+  "bullets": { "count": 5, "max_chars_each": 500 },
+  "description": { "max_chars": 2000 },
+  "search_terms": { "max_bytes": 249 },
+  "main_image": {
+    "min_long_side_px": 1000,
+    "background_min_channel": 250,
+    "background_border_fraction": 0.98,
+    "occupancy_min": 0.85
+  }
+}
